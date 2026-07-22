@@ -5,487 +5,299 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>小红书封面生成器</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  font-family: "PingFang SC", "Helvetica Neue", "Noto Serif SC", serif;
-  background: #f5f0eb;
-  color: #2c2c2c;
-  min-height: 100dvh;
-  padding-bottom: calc(100px + env(safe-area-inset-bottom));
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:"PingFang SC","Helvetica Neue",sans-serif;
+  background:#f2efe9;color:#1a1a1a;
+  min-height:100dvh;padding-bottom:calc(100px + env(safe-area-inset-bottom));
 }
+.header{text-align:center;padding:24px 20px 6px}
+.header h1{font-size:19px;font-weight:800;letter-spacing:0.5px}
+.header p{font-size:11px;color:#aaa;margin-top:3px}
 
-/* Header */
-.header {
-  text-align: center;
-  padding: 28px 20px 8px;
-}
-.header h1 { font-size: 20px; font-weight: 700; letter-spacing: 1px; color: #1a1a1a; }
-.header p { font-size: 12px; color: #999; margin-top: 4px; }
+.section-label{font-size:11px;color:#999;padding:18px 16px 4px;font-weight:600;letter-spacing:1px}
 
-/* Template Grid */
-.template-label {
-  font-size: 12px;
-  color: #999;
-  padding: 16px 16px 6px;
-  font-weight: 500;
-  letter-spacing: 1px;
+/* Template chips */
+.tpl-scroll{
+  display:flex;gap:10px;padding:0 16px 10px;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
 }
-.template-grid {
-  display: flex;
-  gap: 10px;
-  padding: 0 16px 12px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+.tpl-scroll::-webkit-scrollbar{display:none}
+.tpl-chip{
+  flex-shrink:0;text-align:center;cursor:pointer;
 }
-.template-grid::-webkit-scrollbar { display: none; }
-.tpl-card {
-  flex-shrink: 0;
-  width: 72px;
-  height: 96px;
-  border-radius: 8px;
-  cursor: pointer;
-  border: 2px solid transparent;
-  overflow: hidden;
-  transition: all 0.2s;
-  position: relative;
+.tpl-thumb{
+  width:64px;height:85px;border-radius:6px;border:2px solid transparent;
+  overflow:hidden;transition:all .2s;position:relative;
 }
-.tpl-card.active { border-color: #D45161; box-shadow: 0 0 0 2px rgba(212,81,97,0.2); }
-.tpl-card .tpl-mini {
-  width: 100%; height: 100%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; font-weight: 900; color: #fff;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+.tpl-chip.active .tpl-thumb{border-color:#d45161;box-shadow:0 0 0 3px rgba(212,81,97,.15)}
+.tpl-thumb-inner{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:900;color:#fff;
 }
-.tpl-name {
-  text-align: center;
-  font-size: 10px;
-  color: #888;
-  margin-top: 4px;
-}
+.tpl-label{font-size:10px;color:#888;margin-top:3px}
 
 /* Form */
-.form-card {
-  margin: 0 16px 12px;
-  background: #fff;
-  border-radius: 14px;
-  padding: 18px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+.fm{
+  margin:0 16px 12px;background:#fff;border-radius:12px;padding:16px;
+  box-shadow:0 1px 3px rgba(0,0,0,.03);
 }
-.form-row { display: flex; gap: 10px; margin-bottom: 12px; }
-.form-row:last-child { margin-bottom: 0; }
-.form-group { flex: 1; }
-.form-group.full { flex: none; width: 100%; }
-.form-group label {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  color: #aaa;
-  margin-bottom: 5px;
-  letter-spacing: 0.5px;
+.fm-row{display:flex;gap:8px;margin-bottom:10px}
+.fm-row:last-child{margin-bottom:0}
+.fg{flex:1}
+.fg label{display:block;font-size:10px;font-weight:600;color:#bbb;margin-bottom:4px;letter-spacing:.5px}
+.fg input,.fg textarea{
+  width:100%;padding:9px 10px;border:1px solid #ebe6df;border-radius:7px;
+  font-size:13px;font-family:inherit;background:#faf8f5;outline:none;
 }
-.form-group input, .form-group textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #e8e3dc;
-  border-radius: 8px;
-  font-size: 14px;
-  font-family: inherit;
-  background: #faf8f5;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.form-group input:focus, .form-group textarea:focus { border-color: #D45161; }
-.form-group textarea { resize: none; height: 50px; font-size: 13px; }
+.fg input:focus,.fg textarea:focus{border-color:#d45161}
+.fg textarea{resize:none;height:44px;font-size:12px}
 
 /* Preview */
-.preview-section {
-  margin: 0 20px;
-  display: flex;
-  justify-content: center;
-}
-.cover-preview {
-  width: 300px;
-  height: 400px;
-  border-radius: 10px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-}
-.cover-layer { position: absolute; inset: 0; }
-
-/* Template Styles */
-.cover-minimalist { background: #f8f5f0; }
-.cover-bold { background: #1a1a2e; }
-.cover-garden { background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 40%, #a5d6a7 100%); }
-.cover-magazine { background: #fff; }
-.cover-retro { background: #fdf2e9; }
-.cover-ink { background: #fafafa; }
-
-/* Elements */
-.cover-shape { position: absolute; border-radius: 50%; }
-.cover-line { position: absolute; }
-.cover-dot-grid {
-  position: absolute;
-  width: 100%; height: 60%;
-  background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
-  background-size: 20px 20px;
-}
-.cover-stripe {
-  position: absolute; left: 0; right: 0;
-  height: 8px;
+.pv-wrap{display:flex;justify-content:center;padding:8px 0 16px}
+.pv{
+  width:300px;height:400px;border-radius:8px;overflow:hidden;
+  position:relative;box-shadow:0 6px 24px rgba(0,0,0,.1);
 }
 
-/* Text */
-.cover-main-title {
-  position: absolute;
-  font-weight: 900;
-  line-height: 1.15;
-  z-index: 2;
+/* Btns */
+.btns{display:flex;gap:10px;padding:0 16px 16px}
+.btn{
+  flex:1;padding:11px;border-radius:9px;font-size:13px;font-weight:600;
+  font-family:inherit;cursor:pointer;border:none;text-align:center;
 }
-.cover-sub-title {
-  position: absolute;
-  font-weight: 400;
-  z-index: 2;
-  opacity: 0.85;
-}
-.cover-tag-badge {
-  position: absolute;
-  z-index: 3;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1px;
-}
-
-/* Buttons */
-.btn-row {
-  display: flex;
-  gap: 10px;
-  padding: 16px;
-}
-.btn {
-  flex: 1;
-  padding: 12px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  border: none;
-}
-.btn-primary { background: #1a1a2e; color: #fff; }
-.btn-outline { background: #fff; color: #1a1a2e; border: 1.5px solid #ddd; }
+.btn-dark{background:#1a1a2e;color:#fff}
+.btn-light{background:#fff;color:#1a1a2e;border:1.5px solid #e0dbd4}
 
 /* Pricing */
-.pricing-card {
-  margin: 4px 16px 20px;
-  background: #fff;
-  border-radius: 14px;
-  padding: 22px;
-  text-align: center;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #f0ebe3;
+.pcard{
+  margin:0 16px 20px;background:#fff;border-radius:12px;padding:20px;
+  text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.03);
 }
-.pricing-card .badge {
-  display: inline-block;
-  background: #1a1a2e;
-  color: #fff;
-  padding: 3px 10px;
-  border-radius: 4px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  margin-bottom: 12px;
+.pcard .badge{
+  display:inline-block;background:#1a1a2e;color:#fff;padding:3px 12px;
+  border-radius:4px;font-size:10px;font-weight:600;letter-spacing:1px;margin-bottom:10px;
 }
-.pricing-card h3 { font-size: 17px; margin-bottom: 2px; }
-.pricing-card .price { font-size: 36px; font-weight: 900; color: #1a1a2e; margin: 8px 0 2px; }
-.pricing-card .price span { font-size: 13px; font-weight: 400; color: #999; }
-.pricing-card .features {
-  font-size: 12px; color: #888; line-height: 2; margin: 12px 0 16px;
+.pcard h3{font-size:16px;margin-bottom:2px}
+.pcard .price{font-size:34px;font-weight:900;margin:6px 0 2px}
+.pcard .price span{font-size:12px;font-weight:400;color:#999}
+.pcard .fts{font-size:11px;color:#888;line-height:2;margin:10px 0 14px}
+.pcard .ctc{
+  display:inline-block;background:#1a1a2e;color:#fff;padding:9px 30px;
+  border-radius:7px;font-size:12px;font-weight:600;text-decoration:none;
 }
-.pricing-card .contact-btn {
-  display: inline-block;
-  background: #1a1a2e;
-  color: #fff;
-  padding: 10px 36px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  letter-spacing: 0.5px;
+.foot{text-align:center;padding:12px;font-size:10px;color:#ccc}
+.toast{
+  position:fixed;bottom:120px;left:50%;transform:translateX(-50%);
+  background:#1a1a2e;color:#fff;padding:9px 20px;border-radius:18px;
+  font-size:12px;z-index:99;opacity:0;transition:opacity .25s;pointer-events:none;
 }
-.footer { text-align: center; padding: 12px; font-size: 10px; color: #ccc; }
-
-/* Toast */
-.toast {
-  position: fixed;
-  bottom: 120px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #1a1a2e;
-  color: #fff;
-  padding: 10px 22px;
-  border-radius: 20px;
-  font-size: 13px;
-  z-index: 100;
-  opacity: 0;
-  transition: opacity 0.25s;
-  pointer-events: none;
-}
-.toast.show { opacity: 1; }
+.toast.on{opacity:1}
 </style>
 </head>
 <body>
 
 <div class="header">
   <h1>封面生成器</h1>
-  <p>小红书 · 高级感封面模板</p>
+  <p>6种小红书爆款布局 · 选模板填文字即出图</p>
 </div>
 
-<div class="template-label">选择模板</div>
-<div class="template-grid" id="tplGrid"></div>
+<div class="section-label">模板</div>
+<div class="tpl-scroll" id="tplScroll"></div>
 
-<div class="form-card">
-  <div class="form-row">
-    <div class="form-group">
-      <label>标签</label>
-      <input id="tagInput" placeholder="产后修复" maxlength="8" oninput="render()">
-    </div>
-    <div class="form-group" style="flex:2">
-      <label>主标题</label>
-      <input id="titleInput" placeholder="肚子松垮不是胖" maxlength="16" oninput="render()">
-    </div>
+<div class="fm">
+  <div class="fm-row">
+    <div class="fg"><label>分类</label><input id="tag" placeholder="产后修复" maxlength="6" oninput="r()"></div>
+    <div class="fg" style="flex:2.5"><label>主标题</label><input id="title" placeholder="肚子松垮不是胖" maxlength="18" oninput="r()"></div>
   </div>
-  <div class="form-row">
-    <div class="form-group full">
-      <label>副标题</label>
-      <textarea id="subInput" placeholder="是腹直肌分离，3个动作修复" maxlength="40" oninput="render()"></textarea>
-    </div>
+  <div class="fm-row">
+    <div class="fg"><label>副标题</label><textarea id="sub" placeholder="是腹直肌分离，3个动作每天10分钟" maxlength="40" oninput="r()"></textarea></div>
   </div>
 </div>
 
-<div class="preview-section">
-  <div class="cover-preview" id="preview"></div>
+<div class="pv-wrap"><div class="pv" id="pv"></div></div>
+
+<div class="btns">
+  <button class="btn btn-light" onclick="demo()">🎲 随机示例</button>
+  <button class="btn btn-dark" onclick="save()">💾 保存</button>
 </div>
 
-<div class="btn-row">
-  <button class="btn btn-outline" onclick="randomDemo()">🎲 随机示例</button>
-  <button class="btn btn-primary" onclick="saveIt()">💾 保存设计</button>
-</div>
-
-<div class="pricing-card">
+<div class="pcard">
   <div class="badge">PRO</div>
-  <h3>解锁完整版</h3>
+  <h3>解锁全部模板 · 高清导出</h3>
   <div class="price">¥29<span>/永久</span></div>
-  <div class="features">20+高级模板 · AI智能配色 · 高清原图导出 · 无限使用</div>
-  <a class="contact-btn" href="javascript:void(0)" onclick="toast('📱 加微信：dandan_freefun')">加微信解锁 →</a>
+  <div class="fts">30+高级模板 · AI智能配色 · 高清原图 · 无限使用</div>
+  <a class="ctc" href="javascript:void(0)" onclick="t('📱 加微信：dandan_freefun')">加微信解锁 →</a>
 </div>
-<div class="footer">封面生成器 · 演示版</div>
+<div class="foot">封面生成器 · 演示版</div>
 <div class="toast" id="toast"></div>
 
 <script>
-const P = document.getElementById('preview');
+const P=document.getElementById('pv');
+let cur=0;
 
-const templates = [
+const TPLS=[
   {
-    id: 'minimal',
-    name: '极简白',
-    bg: '#f5f2ed',
-    mini: {bg:'#f5f2ed',color:'#333',text:'Aa'},
-    render(tag,title,sub) {
+    id:'photo-title',name:'人物+大字',color:'#d45161',label:'人+字',
+    render(tag,title,sub){
       return `
-        <div class="cover-layer" style="background:#f5f2ed"></div>
-        <div class="cover-dot-grid" style="top:0;opacity:0.5"></div>
-        <div style="position:absolute;top:32px;left:28px;right:28px;z-index:3">
-          <span style="font-size:10px;letter-spacing:3px;color:#bbb;font-weight:600;text-transform:uppercase">XIAOHONGSHU</span>
+        <div style="position:absolute;inset:0;background:linear-gradient(135deg,#e8d5c8,#d4bcae)"></div>
+        <div style="position:absolute;top:14px;left:14px;right:14px;bottom:42%;background:rgba(0,0,0,.08);border-radius:4px;display:flex;align-items:center;justify-content:center">
+          <div style="text-align:center;color:rgba(0,0,0,.25)">
+            <div style="font-size:40px">📷</div>
+            <div style="font-size:10px;margin-top:4px">放你的照片</div>
+          </div>
         </div>
-        <div style="position:absolute;top:80px;left:28px;right:28px;z-index:2">
-          <div style="font-size:42px;font-weight:900;line-height:1.1;color:#1a1a1a;letter-spacing:-1px">${title||'极简'}</div>
-        </div>
-        <div style="position:absolute;bottom:60px;left:28px;right:28px;z-index:2">
-          <div style="width:28px;height:3px;background:#D45161;margin-bottom:14px"></div>
-          <div style="font-size:13px;color:#888;line-height:1.6">${sub||'副标题文案'}</div>
-          <div style="margin-top:14px;display:inline-block;padding:3px 8px;background:#1a1a2e;color:#fff;font-size:9px;letter-spacing:2px">${tag||'标签'}</div>
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:20px 16px 24px;background:linear-gradient(transparent,rgba(0,0,0,.35))">
+          <span style="display:inline-block;background:rgba(255,255,255,.25);backdrop-filter:blur(8px);color:#fff;padding:3px 10px;border-radius:10px;font-size:9px;font-weight:600;margin-bottom:8px">${tag||'标签'}</span>
+          <div style="font-size:24px;font-weight:900;color:#fff;line-height:1.25;text-shadow:0 2px 6px rgba(0,0,0,.2)">${title||'你的标题'}</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:4px">${sub||'副标题文案'}</div>
         </div>`;
     }
   },
   {
-    id: 'bold',
-    name: '黑金大字',
-    bg: '#1a1a2e',
-    mini: {bg:'#1a1a2e',color:'#f4c542',text:'Aa'},
-    render(tag,title,sub) {
+    id:'big-text',name:'纯大字',color:'#1a1a2e',label:'大字',
+    render(tag,title,sub){
       return `
-        <div class="cover-layer" style="background:#12121f"></div>
-        <div style="position:absolute;top:20%;left:50%;width:160px;height:160px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(244,197,66,0.12) 0%,transparent 70%)"></div>
-        <div style="position:absolute;top:28px;right:28px;z-index:3">
-          <span style="font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.3);font-weight:500">${tag||'TAG'}</span>
+        <div style="position:absolute;inset:0;background:#f7f5f0"></div>
+        <div style="position:absolute;top:20px;left:20px;z-index:2">
+          <span style="font-size:9px;letter-spacing:3px;color:#bbb;font-weight:600">${tag||'TAG'}</span>
         </div>
-        <div style="position:absolute;top:50%;left:28px;right:28px;transform:translateY(-50%);z-index:2">
-          <div style="font-size:38px;font-weight:900;line-height:1.15;color:#fff;letter-spacing:-1px">${title||'黑金'}<br><span style="color:#f4c542">大字标题</span></div>
-        </div>
-        <div style="position:absolute;bottom:50px;left:28px;right:28px;z-index:2">
-          <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6">${sub||'副标题描述文案'}</div>
+        <div style="position:absolute;top:50%;left:20px;right:20px;transform:translateY(-50%);z-index:2">
+          <div style="font-size:44px;font-weight:900;line-height:1.1;color:#1a1a1a;letter-spacing:-1px">${title||'大字'}</div>
+          <div style="width:24px;height:4px;background:#d45161;margin:14px 0"></div>
+          <div style="font-size:12px;color:#999;line-height:1.6">${sub||'副标题描述文案'}</div>
         </div>`;
     }
   },
   {
-    id: 'magazine',
-    name: '杂志排版',
-    bg: '#fff',
-    mini: {bg:'#fff',color:'#D45161',text:'M'},
-    render(tag,title,sub) {
-      let lines = (title||'杂志').split(/[，,]/);
-      let t1 = lines[0]||'';
-      let t2 = lines[1]||'';
+    id:'split',name:'上下分色',color:'#e8725a',label:'分色',
+    render(tag,title,sub){
+      let lines=(title||'上下分色').split(/[，,]/);
       return `
-        <div class="cover-layer" style="background:#fff"></div>
-        <div style="position:absolute;top:0;left:0;width:100%;height:55%;background:#f0ebe3"></div>
-        <div style="position:absolute;top:28px;left:28px;z-index:3">
-          <span style="font-size:9px;letter-spacing:3px;color:#999;font-weight:600">${tag||'COVER STORY'}</span>
-          <div style="width:20px;height:1px;background:#D45161;margin-top:6px"></div>
+        <div style="position:absolute;inset:0;background:#f5f0ea"></div>
+        <div style="position:absolute;top:0;left:0;right:0;bottom:45%;background:#d45161"></div>
+        <div style="position:absolute;top:50%;left:20px;transform:translateY(-50%);z-index:2">
+          <span style="background:#fff;color:#d45161;padding:3px 10px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:1px">${tag||'TAG'}</span>
         </div>
-        <div style="position:absolute;top:38%;left:28px;right:28px;z-index:2">
-          <div style="font-size:36px;font-weight:900;line-height:1.2;color:#1a1a1a;letter-spacing:-1px">${t1}</div>
-          ${t2?`<div style="font-size:36px;font-weight:300;line-height:1.2;color:#D45161">${t2}</div>`:''}
+        <div style="position:absolute;top:16px;left:20px;right:20px;z-index:2">
+          <div style="font-size:30px;font-weight:900;color:#fff;line-height:1.2">${lines[0]||''}</div>
+          ${lines[1]?`<div style="font-size:30px;font-weight:300;color:rgba(255,255,255,.8);line-height:1.2">${lines[1]}</div>`:''}
         </div>
-        <div style="position:absolute;bottom:40px;left:28px;right:28px;z-index:2">
-          <div style="font-size:11px;color:#888;line-height:1.6;border-left:2px solid #D45161;padding-left:10px">${sub||'杂志风格副标题'}</div>
+        <div style="position:absolute;bottom:28px;left:20px;right:20px;z-index:2">
+          <div style="font-size:12px;color:#888;line-height:1.6">${sub||'副标题'}</div>
         </div>`;
     }
   },
   {
-    id: 'garden',
-    name: '莫奈花园',
-    bg: 'linear-gradient(180deg,#e8f5e9,#c8e6c9)',
-    mini: {bg:'#c8e6c9',color:'#2e7d32',text:'Aa'},
-    render(tag,title,sub) {
+    id:'card',name:'卡片式',color:'#4a9e6b',label:'卡片',
+    render(tag,title,sub){
       return `
-        <div class="cover-layer" style="background:linear-gradient(180deg,#e8f5e9 0%,#c8e6c9 50%,#a5d6a7 100%)"></div>
-        <div style="position:absolute;top:15%;left:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.3)"></div>
-        <div style="position:absolute;bottom:20%;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.25)"></div>
-        <div style="position:absolute;top:36px;left:28px;z-index:3">
-          <span style="font-size:10px;letter-spacing:2px;color:rgba(46,125,50,0.5);font-weight:600">✦ ${tag||'自然'} ✦</span>
-        </div>
-        <div style="position:absolute;top:50%;left:28px;right:28px;transform:translateY(-50%);z-index:2;text-align:center">
-          <div style="font-size:34px;font-weight:900;line-height:1.2;color:#1b5e20;letter-spacing:1px">${title||'莫奈花园'}</div>
-          <div style="margin-top:12px;font-size:12px;color:rgba(27,94,32,0.6);line-height:1.6">${sub||'法式浪漫 · 温柔色调'}</div>
+        <div style="position:absolute;inset:0;background:#f0ede6"></div>
+        <div style="position:absolute;top:16px;left:16px;right:16px;bottom:16px;background:#fff;border-radius:6px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px">
+          <div style="font-size:9px;letter-spacing:3px;color:#d45161;font-weight:600;margin-bottom:12px">✦ ${tag||'TAG'} ✦</div>
+          <div style="font-size:32px;font-weight:900;color:#1a1a1a;text-align:center;line-height:1.2">${title||'卡片'}</div>
+          <div style="width:20px;height:2px;background:#ddd;margin:14px 0"></div>
+          <div style="font-size:11px;color:#aaa;text-align:center;line-height:1.6">${sub||'副标题文案描述'}</div>
         </div>`;
     }
   },
   {
-    id: 'ink',
-    name: '水墨留白',
-    bg: '#fafafa',
-    mini: {bg:'#fafafa',color:'#333',text:'墨'},
-    render(tag,title,sub) {
+    id:'number',name:'数字大字',color:'#f4c542',label:'数字',
+    render(tag,title,sub){
+      let num='3',rest=title||'个动作';
+      let m=title&&title.match(/^(\d+)/);
+      if(m){num=m[1];rest=title.slice(m[0].length)||rest;}
       return `
-        <div class="cover-layer" style="background:#fafafa"></div>
-        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#d0d0d0,transparent)"></div>
-        <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#d0d0d0,transparent)"></div>
-        <div style="position:absolute;top:16px;right:20px;z-index:3">
-          <span style="writing-mode:vertical-rl;font-size:10px;letter-spacing:2px;color:#bbb">${tag||'标签'}</span>
+        <div style="position:absolute;inset:0;background:linear-gradient(135deg,#1a1a2e,#2d2d44)"></div>
+        <div style="position:absolute;top:20px;right:20px;z-index:2">
+          <span style="font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.3)">${tag||'TAG'}</span>
         </div>
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;text-align:center;width:80%">
-          <div style="font-size:40px;font-weight:900;line-height:1.2;color:#1a1a1a;letter-spacing:4px">${title||'留白'}</div>
-          <div style="margin-top:18px;width:30px;height:1px;background:#ccc;display:inline-block"></div>
-          <div style="margin-top:14px;font-size:12px;color:#aaa;line-height:1.8;letter-spacing:1px">${sub||'少即是多 · 留白美学'}</div>
+        <div style="position:absolute;top:50%;left:24px;right:24px;transform:translateY(-50%);z-index:2">
+          <div style="font-size:90px;font-weight:900;color:#f4c542;line-height:.85;letter-spacing:-3px">${num}</div>
+          <div style="font-size:28px;font-weight:700;color:#fff;line-height:1.2;margin-top:4px">${rest}</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:10px;line-height:1.5">${sub||'数字强调型封面'}</div>
         </div>`;
     }
   },
   {
-    id: 'retro',
-    name: '复古画报',
-    bg: '#fdf2e9',
-    mini: {bg:'#fdf2e9',color:'#c0392b',text:'Aa'},
-    render(tag,title,sub) {
+    id:'frame',name:'边框留白',color:'#c0392b',label:'边框',
+    render(tag,title,sub){
       return `
-        <div class="cover-layer" style="background:#fdf2e9"></div>
-        <div style="position:absolute;inset:8px;border:1.5px solid rgba(192,57,43,0.2);border-radius:4px;z-index:1"></div>
-        <div style="position:absolute;top:28px;left:28px;right:28px;z-index:3;text-align:center">
-          <span style="font-size:9px;letter-spacing:4px;color:#c0392b;font-weight:600;text-transform:uppercase">—— ${tag||'RETRO'} ——</span>
+        <div style="position:absolute;inset:0;background:#fdf8f3"></div>
+        <div style="position:absolute;inset:10px;border:2px solid #d45161;border-radius:4px;z-index:1"></div>
+        <div style="position:absolute;top:16px;right:20px;z-index:2">
+          <span style="writing-mode:vertical-rl;font-size:10px;letter-spacing:2px;color:#d45161;font-weight:600">${tag||'TAG'}</span>
         </div>
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;text-align:center;width:75%">
-          <div style="font-size:34px;font-weight:900;line-height:1.3;color:#5d2e2a;letter-spacing:2px">${title||'复古'}</div>
-          <div style="margin-top:16px;font-size:11px;color:#a08070;line-height:1.8;font-style:italic;letter-spacing:1px">${sub||'画报风格 · 温暖怀旧'}</div>
-        </div>
-        <div style="position:absolute;bottom:36px;left:28px;right:28px;z-index:3;text-align:center">
-          <span style="font-size:8px;letter-spacing:2px;color:#c0a090">★ ★ ★</span>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;text-align:center;width:70%">
+          <div style="font-size:34px;font-weight:900;color:#3a1a1a;line-height:1.25;letter-spacing:1px">${title||'边框'}</div>
+          <div style="width:16px;height:1px;background:#d45161;display:inline-block;margin:14px 0"></div>
+          <div style="font-size:11px;color:#a08080;line-height:1.8">${sub||'留白边框风格'}</div>
         </div>`;
     }
   }
 ];
 
-let curTpl = templates[0];
-
-function buildTplGrid() {
-  const grid = document.getElementById('tplGrid');
-  grid.innerHTML = templates.map((t,i) => `
-    <div style="text-align:center;flex-shrink:0" onclick="selectTpl(${i})">
-      <div class="tpl-card${i===0?' active':''}" id="tplCard${i}">
-        <div class="tpl-mini" style="background:${t.mini.bg};color:${t.mini.color}">${t.mini.text}</div>
+function buildTplUI(){
+  const el=document.getElementById('tplScroll');
+  el.innerHTML=TPLS.map((t,i)=>`
+    <div class="tpl-chip${i===0?' active':''}" onclick="pick(${i})">
+      <div class="tpl-thumb" id="thumb${i}">
+        <div class="tpl-thumb-inner" style="background:${t.color}">${t.label}</div>
       </div>
-      <div class="tpl-name">${t.name}</div>
-    </div>
-  `).join('');
+      <div class="tpl-label">${t.name}</div>
+    </div>`).join('');
 }
 
-function selectTpl(i) {
-  curTpl = templates[i];
-  document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('active'));
-  document.getElementById('tplCard'+i).classList.add('active');
-  render();
+function pick(i){cur=i;document.querySelectorAll('.tpl-chip').forEach(c=>c.classList.remove('active'));document.getElementById('thumb'+i).parentElement.classList.add('active');r();}
+
+function r(){
+  const tag=document.getElementById('tag').value;
+  const title=document.getElementById('title').value;
+  const sub=document.getElementById('sub').value;
+  P.innerHTML=TPLS[cur].render(tag,title,sub);
 }
 
-function render() {
-  const tag = document.getElementById('tagInput').value;
-  const title = document.getElementById('titleInput').value;
-  const sub = document.getElementById('subInput').value;
-  P.innerHTML = curTpl.render(tag,title,sub);
-}
-
-function randomDemo() {
-  const demos = [
+function demo(){
+  const demos=[
     {tag:'产后修复',title:'肚子松垮不是胖',sub:'是腹直肌分离，3个动作每天10分钟'},
-    {tag:'健身打卡',title:'八段锦第30天',sub:'从气喘到气定神闲，变化太大了'},
-    {tag:'宝妈日常',title:'二胎妈妈高效一天',sub:'带娃做饭运动，时间这样挤出来'},
-    {tag:'自我成长',title:'30岁我重活了一次',sub:'告别产后抑郁的5个方法'},
-    {tag:'婚姻经营',title:'结婚7年零争吵',sub:'不是忍，是我们约好这3件事'},
-    {tag:'育儿干货',title:'二升三暑假规划',sub:'不报班不焦虑，每天2小时就行'},
-    {tag:'健身',title:'体态比体重重要',sub:'圆肩驼背统统走开'},
+    {tag:'健身',title:'八段锦第30天',sub:'从气喘到行云流水，变化太明显'},
+    {tag:'宝妈',title:'二胎妈妈高效一天',sub:'做饭带娃运动，时间这样挤'},
+    {tag:'成长',title:'30岁我重活了一次',sub:'告别产后抑郁的5个方法'},
+    {tag:'婚姻',title:'结婚7年零争吵',sub:'不是忍，是我们约好3件事'},
+    {tag:'育儿',title:'二升三暑假这样过',sub:'不报班不焦虑，每天2小时'},
+    {tag:'健身',title:'7天改善圆肩驼背',sub:'体态比体重重要100倍'},
+    {tag:'修复',title:'腹直肌分离自测',sub:'产后必看！2指以内正常'},
   ];
-  const d = demos[Math.floor(Math.random()*demos.length)];
-  const ti = Math.floor(Math.random()*templates.length);
-  document.getElementById('tagInput').value = d.tag;
-  document.getElementById('titleInput').value = d.title;
-  document.getElementById('subInput').value = d.sub;
-  selectTpl(ti);
+  const d=demos[Math.floor(Math.random()*demos.length)];
+  const ti=Math.floor(Math.random()*TPLS.length);
+  document.getElementById('tag').value=d.tag;
+  document.getElementById('title').value=d.title;
+  document.getElementById('sub').value=d.sub;
+  pick(ti);
 }
 
-function saveIt() {
-  let saved = JSON.parse(localStorage.getItem('covers_v2')||'[]');
-  saved.unshift({
-    tpl:curTpl.id,
-    tag:document.getElementById('tagInput').value,
-    title:document.getElementById('titleInput').value,
-    sub:document.getElementById('subInput').value,
+function save(){
+  let s=JSON.parse(localStorage.getItem('covers_v3')||'[]');
+  s.unshift({
+    tpl:TPLS[cur].id,tag:document.getElementById('tag').value,
+    title:document.getElementById('title').value,
+    sub:document.getElementById('sub').value,
     time:new Date().toLocaleString()
   });
-  if(saved.length>20) saved=saved.slice(0,20);
-  localStorage.setItem('covers_v2',JSON.stringify(saved));
-  toast('✅ 已保存');
+  if(s.length>20)s=s.slice(0,20);
+  localStorage.setItem('covers_v3',JSON.stringify(s));
+  t('✅ 已保存');
 }
 
-function toast(msg) {
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),1800);
+function t(m){
+  const el=document.getElementById('toast');
+  el.textContent=m;el.classList.add('on');
+  setTimeout(()=>el.classList.remove('on'),1800);
 }
 
-buildTplGrid();
-render();
+buildTplUI();r();
 </script>
 </body>
 </html>
