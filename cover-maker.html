@@ -8,63 +8,73 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{
   font-family:"PingFang SC","Helvetica Neue",sans-serif;
-  background:#f2efe9;color:#1a1a1a;
-  min-height:100dvh;padding-bottom:calc(100px + env(safe-area-inset-bottom));
+  background:#f5f1ec;color:#1a1a1a;
+  min-height:100dvh;padding-bottom:calc(110px + env(safe-area-inset-bottom));
 }
-.header{text-align:center;padding:24px 20px 6px}
-.header h1{font-size:19px;font-weight:800;letter-spacing:0.5px}
-.header p{font-size:11px;color:#aaa;margin-top:3px}
+.topbar{text-align:center;padding:24px 16px 4px}
+.topbar h1{font-size:18px;font-weight:800}
+.topbar p{font-size:10px;color:#aaa;margin-top:2px}
 
-.section-label{font-size:11px;color:#999;padding:18px 16px 4px;font-weight:600;letter-spacing:1px}
+/* Preview */
+.pvw{display:flex;justify-content:center;padding:12px 0 8px}
+.pv{
+  width:300px;height:400px;border-radius:8px;overflow:hidden;
+  position:relative;box-shadow:0 8px 30px rgba(0,0,0,.12);
+  transition:all .3s;
+}
 
-/* Template chips */
-.tpl-scroll{
-  display:flex;gap:10px;padding:0 16px 10px;
-  overflow-x:auto;-webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
+/* Controls */
+.ctrl{
+  margin:0 16px 8px;background:#fff;border-radius:12px;padding:14px 16px;
+  box-shadow:0 1px 3px rgba(0,0,0,.03);
 }
-.tpl-scroll::-webkit-scrollbar{display:none}
-.tpl-chip{
-  flex-shrink:0;text-align:center;cursor:pointer;
+.ctrl-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ctrl-row:last-child{margin-bottom:0}
+.ctrl-label{font-size:11px;font-weight:600;color:#999;min-width:40px;white-space:nowrap}
+.ctrl input[type=range]{flex:1;height:4px;-webkit-appearance:none;background:#e8e3dc;border-radius:2px;outline:none}
+.ctrl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#1a1a2e;cursor:pointer}
+.ctrl .val{font-size:11px;color:#888;min-width:30px;text-align:right}
+.color-dots{display:flex;gap:6px;flex-wrap:wrap}
+.cdot{
+  width:24px;height:24px;border-radius:50%;cursor:pointer;
+  border:2px solid transparent;transition:all .15s;
 }
-.tpl-thumb{
-  width:64px;height:85px;border-radius:6px;border:2px solid transparent;
-  overflow:hidden;transition:all .2s;position:relative;
+.cdot.active{border-color:#1a1a2e;transform:scale(1.15)}
+
+/* Layout chips */
+.sec-label{font-size:11px;color:#999;padding:12px 16px 4px;font-weight:600;letter-spacing:1px}
+.lay-scroll{
+  display:flex;gap:8px;padding:0 16px 8px;overflow-x:auto;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
 }
-.tpl-chip.active .tpl-thumb{border-color:#d45161;box-shadow:0 0 0 3px rgba(212,81,97,.15)}
-.tpl-thumb-inner{
-  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-  font-size:22px;font-weight:900;color:#fff;
+.lay-scroll::-webkit-scrollbar{display:none}
+.lay-chip{flex-shrink:0;text-align:center;cursor:pointer}
+.lay-thumb{
+  width:56px;height:74px;border-radius:5px;border:2px solid transparent;
+  overflow:hidden;transition:all .15s
 }
-.tpl-label{font-size:10px;color:#888;margin-top:3px}
+.lay-chip.active .lay-thumb{border-color:#d45161;box-shadow:0 0 0 2px rgba(212,81,97,.15)}
+.lay-name{font-size:9px;color:#999;margin-top:3px}
 
 /* Form */
 .fm{
-  margin:0 16px 12px;background:#fff;border-radius:12px;padding:16px;
+  margin:0 16px 8px;background:#fff;border-radius:12px;padding:14px;
   box-shadow:0 1px 3px rgba(0,0,0,.03);
 }
-.fm-row{display:flex;gap:8px;margin-bottom:10px}
+.fm-row{display:flex;gap:8px;margin-bottom:8px}
 .fm-row:last-child{margin-bottom:0}
 .fg{flex:1}
-.fg label{display:block;font-size:10px;font-weight:600;color:#bbb;margin-bottom:4px;letter-spacing:.5px}
+.fg label{display:block;font-size:10px;font-weight:600;color:#bbb;margin-bottom:3px}
 .fg input,.fg textarea{
-  width:100%;padding:9px 10px;border:1px solid #ebe6df;border-radius:7px;
+  width:100%;padding:8px 10px;border:1px solid #ebe6df;border-radius:6px;
   font-size:13px;font-family:inherit;background:#faf8f5;outline:none;
 }
 .fg input:focus,.fg textarea:focus{border-color:#d45161}
-.fg textarea{resize:none;height:44px;font-size:12px}
+.fg textarea{resize:none;height:40px;font-size:12px}
 
-/* Preview */
-.pv-wrap{display:flex;justify-content:center;padding:8px 0 16px}
-.pv{
-  width:300px;height:400px;border-radius:8px;overflow:hidden;
-  position:relative;box-shadow:0 6px 24px rgba(0,0,0,.1);
-}
-
-/* Btns */
-.btns{display:flex;gap:10px;padding:0 16px 16px}
+.btns{display:flex;gap:8px;padding:0 16px 12px}
 .btn{
-  flex:1;padding:11px;border-radius:9px;font-size:13px;font-weight:600;
+  flex:1;padding:10px;border-radius:8px;font-size:12px;font-weight:600;
   font-family:inherit;cursor:pointer;border:none;text-align:center;
 }
 .btn-dark{background:#1a1a2e;color:#fff}
@@ -72,25 +82,20 @@ body{
 
 /* Pricing */
 .pcard{
-  margin:0 16px 20px;background:#fff;border-radius:12px;padding:20px;
+  margin:0 16px 20px;background:#fff;border-radius:12px;padding:18px;
   text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.03);
 }
-.pcard .badge{
-  display:inline-block;background:#1a1a2e;color:#fff;padding:3px 12px;
-  border-radius:4px;font-size:10px;font-weight:600;letter-spacing:1px;margin-bottom:10px;
-}
-.pcard h3{font-size:16px;margin-bottom:2px}
-.pcard .price{font-size:34px;font-weight:900;margin:6px 0 2px}
-.pcard .price span{font-size:12px;font-weight:400;color:#999}
-.pcard .fts{font-size:11px;color:#888;line-height:2;margin:10px 0 14px}
-.pcard .ctc{
-  display:inline-block;background:#1a1a2e;color:#fff;padding:9px 30px;
-  border-radius:7px;font-size:12px;font-weight:600;text-decoration:none;
-}
-.foot{text-align:center;padding:12px;font-size:10px;color:#ccc}
+.pcard .badge{display:inline-block;background:#1a1a2e;color:#fff;padding:2px 10px;border-radius:3px;font-size:9px;font-weight:600;letter-spacing:1px;margin-bottom:8px}
+.pcard h3{font-size:15px}
+.pcard .prc{font-size:30px;font-weight:900;margin:4px 0 2px}
+.pcard .prc span{font-size:11px;font-weight:400;color:#999}
+.pcard .fts{font-size:10px;color:#888;line-height:2;margin:8px 0 12px}
+.pcard .ctc{display:inline-block;background:#1a1a2e;color:#fff;padding:8px 26px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none}
+.foot{text-align:center;padding:10px;font-size:9px;color:#ccc}
+
 .toast{
   position:fixed;bottom:120px;left:50%;transform:translateX(-50%);
-  background:#1a1a2e;color:#fff;padding:9px 20px;border-radius:18px;
+  background:#1a1a2e;color:#fff;padding:8px 18px;border-radius:16px;
   font-size:12px;z-index:99;opacity:0;transition:opacity .25s;pointer-events:none;
 }
 .toast.on{opacity:1}
@@ -98,37 +103,53 @@ body{
 </head>
 <body>
 
-<div class="header">
-  <h1>封面生成器</h1>
-  <p>6种小红书爆款布局 · 选模板填文字即出图</p>
+<div class="topbar"><h1>🎨 封面生成器</h1><p>调颜色 · 调大小 · 选布局 · 所见即所得</p></div>
+
+<div class="pvw"><div class="pv" id="pv"></div></div>
+
+<!-- Color Controls -->
+<div class="ctrl">
+  <div class="ctrl-row">
+    <span class="ctrl-label">标题色</span>
+    <div class="color-dots" id="titleColors"></div>
+  </div>
+  <div class="ctrl-row">
+    <span class="ctrl-label">背景色</span>
+    <div class="color-dots" id="bgColors"></div>
+  </div>
+  <div class="ctrl-row">
+    <span class="ctrl-label">字号</span>
+    <input type="range" id="sizeSlider" min="28" max="56" value="42" oninput="updateSize()">
+    <span class="val" id="sizeVal">42px</span>
+  </div>
 </div>
 
-<div class="section-label">模板</div>
-<div class="tpl-scroll" id="tplScroll"></div>
+<!-- Layouts -->
+<div class="sec-label">布局</div>
+<div class="lay-scroll" id="layScroll"></div>
 
+<!-- Form -->
 <div class="fm">
   <div class="fm-row">
-    <div class="fg"><label>分类</label><input id="tag" placeholder="产后修复" maxlength="6" oninput="r()"></div>
-    <div class="fg" style="flex:2.5"><label>主标题</label><input id="title" placeholder="肚子松垮不是胖" maxlength="18" oninput="r()"></div>
+    <div class="fg"><label>标签</label><input id="tag" placeholder="产后修复" maxlength="6" oninput="rr()"></div>
+    <div class="fg" style="flex:2.5"><label>主标题</label><input id="title" placeholder="肚子松垮不是胖" maxlength="18" oninput="rr()"></div>
   </div>
   <div class="fm-row">
-    <div class="fg"><label>副标题</label><textarea id="sub" placeholder="是腹直肌分离，3个动作每天10分钟" maxlength="40" oninput="r()"></textarea></div>
+    <div class="fg"><label>副标题</label><textarea id="sub" placeholder="是腹直肌分离！3个动作修复" maxlength="40" oninput="rr()"></textarea></div>
   </div>
 </div>
 
-<div class="pv-wrap"><div class="pv" id="pv"></div></div>
-
 <div class="btns">
-  <button class="btn btn-light" onclick="demo()">🎲 随机示例</button>
+  <button class="btn btn-light" onclick="demo()">🎲 随机</button>
   <button class="btn btn-dark" onclick="save()">💾 保存</button>
 </div>
 
 <div class="pcard">
   <div class="badge">PRO</div>
   <h3>解锁全部模板 · 高清导出</h3>
-  <div class="price">¥29<span>/永久</span></div>
-  <div class="fts">30+高级模板 · AI智能配色 · 高清原图 · 无限使用</div>
-  <a class="ctc" href="javascript:void(0)" onclick="t('📱 加微信：dandan_freefun')">加微信解锁 →</a>
+  <div class="prc">¥29<span>/永久</span></div>
+  <div class="fts">30+模板 · 自定义配色 · 高清原图 · 无限使用</div>
+  <a class="ctc" href="javascript:void(0)" onclick="t('📱 微信：dandan_freefun')">加微信解锁 →</a>
 </div>
 <div class="foot">封面生成器 · 演示版</div>
 <div class="toast" id="toast"></div>
@@ -136,168 +157,218 @@ body{
 <script>
 const P=document.getElementById('pv');
 let cur=0;
+let titleColor='#1a1a1a';
+let bgColor='#f7f5f0';
+let fontSize=42;
 
-const TPLS=[
+const TITLE_COLORS=['#1a1a1a','#ffffff','#d45161','#f4c542','#2d6a4f','#8b5cf6','#e8895a','#0f172a'];
+const BG_COLORS=['#f7f5f0','#1a1a2e','#d45161','#2d6a4f','#fdf2e9','#8b5cf6','#ffffff','#fef3c7','#e0e7ff'];
+
+const LAYOUTS=[
   {
-    id:'photo-title',name:'人物+大字',color:'#d45161',label:'人+字',
-    render(tag,title,sub){
+    id:'bigtext',name:'大字冲击',bg:'#f7f5f0',color:'#1a1a1a',
+    render(tag,title,sub,fs,tc,bc){
+      let sz=fs*1.2;
       return `
-        <div style="position:absolute;inset:0;background:linear-gradient(135deg,#e8d5c8,#d4bcae)"></div>
-        <div style="position:absolute;top:14px;left:14px;right:14px;bottom:42%;background:rgba(0,0,0,.08);border-radius:4px;display:flex;align-items:center;justify-content:center">
-          <div style="text-align:center;color:rgba(0,0,0,.25)">
-            <div style="font-size:40px">📷</div>
-            <div style="font-size:10px;margin-top:4px">放你的照片</div>
-          </div>
-        </div>
-        <div style="position:absolute;bottom:0;left:0;right:0;padding:20px 16px 24px;background:linear-gradient(transparent,rgba(0,0,0,.35))">
-          <span style="display:inline-block;background:rgba(255,255,255,.25);backdrop-filter:blur(8px);color:#fff;padding:3px 10px;border-radius:10px;font-size:9px;font-weight:600;margin-bottom:8px">${tag||'标签'}</span>
-          <div style="font-size:24px;font-weight:900;color:#fff;line-height:1.25;text-shadow:0 2px 6px rgba(0,0,0,.2)">${title||'你的标题'}</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:4px">${sub||'副标题文案'}</div>
-        </div>`;
-    }
-  },
-  {
-    id:'big-text',name:'纯大字',color:'#1a1a2e',label:'大字',
-    render(tag,title,sub){
-      return `
-        <div style="position:absolute;inset:0;background:#f7f5f0"></div>
-        <div style="position:absolute;top:20px;left:20px;z-index:2">
-          <span style="font-size:9px;letter-spacing:3px;color:#bbb;font-weight:600">${tag||'TAG'}</span>
-        </div>
-        <div style="position:absolute;top:50%;left:20px;right:20px;transform:translateY(-50%);z-index:2">
-          <div style="font-size:44px;font-weight:900;line-height:1.1;color:#1a1a1a;letter-spacing:-1px">${title||'大字'}</div>
-          <div style="width:24px;height:4px;background:#d45161;margin:14px 0"></div>
-          <div style="font-size:12px;color:#999;line-height:1.6">${sub||'副标题描述文案'}</div>
-        </div>`;
-    }
-  },
-  {
-    id:'split',name:'上下分色',color:'#e8725a',label:'分色',
-    render(tag,title,sub){
-      let lines=(title||'上下分色').split(/[，,]/);
-      return `
-        <div style="position:absolute;inset:0;background:#f5f0ea"></div>
-        <div style="position:absolute;top:0;left:0;right:0;bottom:45%;background:#d45161"></div>
-        <div style="position:absolute;top:50%;left:20px;transform:translateY(-50%);z-index:2">
-          <span style="background:#fff;color:#d45161;padding:3px 10px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:1px">${tag||'TAG'}</span>
-        </div>
-        <div style="position:absolute;top:16px;left:20px;right:20px;z-index:2">
-          <div style="font-size:30px;font-weight:900;color:#fff;line-height:1.2">${lines[0]||''}</div>
-          ${lines[1]?`<div style="font-size:30px;font-weight:300;color:rgba(255,255,255,.8);line-height:1.2">${lines[1]}</div>`:''}
-        </div>
-        <div style="position:absolute;bottom:28px;left:20px;right:20px;z-index:2">
-          <div style="font-size:12px;color:#888;line-height:1.6">${sub||'副标题'}</div>
-        </div>`;
-    }
-  },
-  {
-    id:'card',name:'卡片式',color:'#4a9e6b',label:'卡片',
-    render(tag,title,sub){
-      return `
-        <div style="position:absolute;inset:0;background:#f0ede6"></div>
-        <div style="position:absolute;top:16px;left:16px;right:16px;bottom:16px;background:#fff;border-radius:6px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px">
-          <div style="font-size:9px;letter-spacing:3px;color:#d45161;font-weight:600;margin-bottom:12px">✦ ${tag||'TAG'} ✦</div>
-          <div style="font-size:32px;font-weight:900;color:#1a1a1a;text-align:center;line-height:1.2">${title||'卡片'}</div>
-          <div style="width:20px;height:2px;background:#ddd;margin:14px 0"></div>
-          <div style="font-size:11px;color:#aaa;text-align:center;line-height:1.6">${sub||'副标题文案描述'}</div>
-        </div>`;
-    }
-  },
-  {
-    id:'number',name:'数字大字',color:'#f4c542',label:'数字',
-    render(tag,title,sub){
-      let num='3',rest=title||'个动作';
-      let m=title&&title.match(/^(\d+)/);
-      if(m){num=m[1];rest=title.slice(m[0].length)||rest;}
-      return `
-        <div style="position:absolute;inset:0;background:linear-gradient(135deg,#1a1a2e,#2d2d44)"></div>
-        <div style="position:absolute;top:20px;right:20px;z-index:2">
-          <span style="font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.3)">${tag||'TAG'}</span>
+        <div style="position:absolute;inset:0;background:${bc}"></div>
+        <div style="position:absolute;top:24px;left:24px;z-index:2">
+          <span style="font-size:10px;letter-spacing:3px;color:${adjustAlpha(tc,.35)};font-weight:600">${tag||'TAG'}</span>
         </div>
         <div style="position:absolute;top:50%;left:24px;right:24px;transform:translateY(-50%);z-index:2">
-          <div style="font-size:90px;font-weight:900;color:#f4c542;line-height:.85;letter-spacing:-3px">${num}</div>
-          <div style="font-size:28px;font-weight:700;color:#fff;line-height:1.2;margin-top:4px">${rest}</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:10px;line-height:1.5">${sub||'数字强调型封面'}</div>
+          <div style="font-size:${sz}px;font-weight:900;line-height:1.1;color:${tc};letter-spacing:-1px">${title||'大标题'}</div>
+          <div style="width:20px;height:4px;background:${tc};margin:12px 0;opacity:.4"></div>
+          <div style="font-size:${Math.round(fs*0.3)}px;color:${adjustAlpha(tc,.45)};line-height:1.5">${sub||'副标题'}</div>
         </div>`;
     }
   },
   {
-    id:'frame',name:'边框留白',color:'#c0392b',label:'边框',
-    render(tag,title,sub){
+    id:'split',name:'分屏撞色',bg:'#d45161',color:'#ffffff',
+    render(tag,title,sub,fs,tc,bc){
+      let lines=(title||'分屏').split(/[，,]/);
+      let sz=fs*0.9;
       return `
-        <div style="position:absolute;inset:0;background:#fdf8f3"></div>
-        <div style="position:absolute;inset:10px;border:2px solid #d45161;border-radius:4px;z-index:1"></div>
-        <div style="position:absolute;top:16px;right:20px;z-index:2">
-          <span style="writing-mode:vertical-rl;font-size:10px;letter-spacing:2px;color:#d45161;font-weight:600">${tag||'TAG'}</span>
+        <div style="position:absolute;inset:0;background:${bc}"></div>
+        <div style="position:absolute;top:0;left:0;right:0;bottom:42%;background:${tc}"></div>
+        <div style="position:absolute;top:48%;left:24px;transform:translateY(-50%);z-index:2">
+          <span style="background:${bc};color:${tc};padding:3px 10px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:1px">${tag||'TAG'}</span>
         </div>
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;text-align:center;width:70%">
-          <div style="font-size:34px;font-weight:900;color:#3a1a1a;line-height:1.25;letter-spacing:1px">${title||'边框'}</div>
-          <div style="width:16px;height:1px;background:#d45161;display:inline-block;margin:14px 0"></div>
-          <div style="font-size:11px;color:#a08080;line-height:1.8">${sub||'留白边框风格'}</div>
+        <div style="position:absolute;top:14px;left:24px;right:24px;z-index:2">
+          <div style="font-size:${sz}px;font-weight:900;color:${getContrast(tc)};line-height:1.15">${lines[0]||''}</div>
+          ${lines[1]?`<div style="font-size:${sz}px;font-weight:300;color:${adjustAlpha(getContrast(tc),.75)};line-height:1.15;margin-top:2px">${lines[1]}</div>`:''}
+        </div>
+        <div style="position:absolute;bottom:24px;left:24px;right:24px;z-index:2">
+          <div style="font-size:${Math.round(fs*0.28)}px;color:${adjustAlpha(tc,.5)};line-height:1.5">${sub||'副标题'}</div>
+        </div>`;
+    }
+  },
+  {
+    id:'photo',name:'照片+字',bg:'#e8d5c8',color:'#ffffff',
+    render(tag,title,sub,fs,tc,bc){
+      let sz=fs*0.75;
+      return `
+        <div style="position:absolute;inset:0;background:${bc}"></div>
+        <div style="position:absolute;top:12px;left:12px;right:12px;bottom:38%;background:rgba(0,0,0,.06);border-radius:4px;display:flex;align-items:center;justify-content:center">
+          <div style="text-align:center;color:rgba(0,0,0,.2)">
+            <div style="font-size:36px">📷</div>
+            <div style="font-size:9px;margin-top:2px">放你的照片</div>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:16px 16px 22px;background:linear-gradient(transparent,rgba(0,0,0,.4))">
+          <span style="display:inline-block;background:rgba(255,255,255,.25);color:#fff;padding:2px 10px;border-radius:10px;font-size:8px;font-weight:600;margin-bottom:6px">${tag||'标签'}</span>
+          <div style="font-size:${sz}px;font-weight:900;color:#fff;line-height:1.2;text-shadow:0 2px 4px rgba(0,0,0,.2)">${title||'标题'}</div>
+          <div style="font-size:${Math.round(fs*0.24)}px;color:rgba(255,255,255,.8);margin-top:3px">${sub||'副标题'}</div>
+        </div>`;
+    }
+  },
+  {
+    id:'number',name:'数字轰炸',bg:'#1a1a2e',color:'#f4c542',
+    render(tag,title,sub,fs,tc,bc){
+      let num='3',rest=title||'个动作修复';
+      let m=title&&title.match(/^(\d+)/);
+      if(m){num=m[1];rest=title.slice(m[0].length)||rest}
+      let nsz=fs*2.1;
+      return `
+        <div style="position:absolute;inset:0;background:${bc}"></div>
+        <div style="position:absolute;top:16px;right:20px;z-index:2">
+          <span style="font-size:9px;letter-spacing:2px;color:${adjustAlpha(tc,.3)}">${tag||'TAG'}</span>
+        </div>
+        <div style="position:absolute;top:50%;left:24px;right:24px;transform:translateY(-50%);z-index:2">
+          <div style="font-size:${nsz}px;font-weight:900;color:${tc};line-height:.8;letter-spacing:-4px">${num}</div>
+          <div style="font-size:${Math.round(fs*0.7)}px;font-weight:700;color:${getContrast(bc)};line-height:1.2;margin-top:2px">${rest}</div>
+          <div style="font-size:${Math.round(fs*0.25)}px;color:${adjustAlpha(getContrast(bc),.45)};margin-top:8px;line-height:1.4">${sub||'数字钩子型封面'}</div>
+        </div>`;
+    }
+  },
+  {
+    id:'bubble',name:'气泡对话',bg:'#fdf2e9',color:'#d45161',
+    render(tag,title,sub,fs,tc,bc){
+      let sz=fs*0.75;
+      return `
+        <div style="position:absolute;inset:0;background:${bc}"></div>
+        <div style="position:absolute;top:30px;left:24px;right:24px;z-index:2">
+          <span style="font-size:9px;letter-spacing:2px;color:${tc};font-weight:600;opacity:.6">${tag||'TAG'}</span>
+        </div>
+        <div style="position:absolute;top:40%;left:24px;right:24px;transform:translateY(-50%);z-index:2">
+          <div style="background:${tc};color:${getContrast(tc)};padding:14px 16px;border-radius:12px 12px 12px 2px;font-size:${sz}px;font-weight:800;line-height:1.2">${title||'气泡'}</div>
+          <div style="width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:12px solid ${tc};margin-left:12px"></div>
+        </div>
+        <div style="position:absolute;bottom:32px;left:24px;right:24px;z-index:2">
+          <div style="font-size:${Math.round(fs*0.25)}px;color:${adjustAlpha(tc,.5)};line-height:1.5">${sub||'像对话一样自然'}</div>
+        </div>`;
+    }
+  },
+  {
+    id:'circle',name:'圆环聚焦',bg:'#f7f5f0',color:'#2d6a4f',
+    render(tag,title,sub,fs,tc,bc){
+      let sz=fs*0.7;
+      return `
+        <div style="position:absolute;inset:0;background:${bc}"></div>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:200px;height:200px;border-radius:50%;border:4px solid ${tc};z-index:1;opacity:.2"></div>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:140px;height:140px;border-radius:50%;border:2px solid ${tc};z-index:1;opacity:.3"></div>
+        <div style="position:absolute;top:24px;left:50%;transform:translateX(-50%);z-index:2">
+          <span style="font-size:9px;letter-spacing:2px;color:${tc};font-weight:600;opacity:.5">${tag||'TAG'}</span>
+        </div>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;text-align:center;width:70%">
+          <div style="font-size:${sz}px;font-weight:900;color:${tc};line-height:1.2">${title||'聚焦'}</div>
+          <div style="font-size:${Math.round(fs*0.24)}px;color:${adjustAlpha(tc,.45)};margin-top:8px;line-height:1.5">${sub||'圆环聚焦设计'}</div>
         </div>`;
     }
   }
 ];
 
-function buildTplUI(){
-  const el=document.getElementById('tplScroll');
-  el.innerHTML=TPLS.map((t,i)=>`
-    <div class="tpl-chip${i===0?' active':''}" onclick="pick(${i})">
-      <div class="tpl-thumb" id="thumb${i}">
-        <div class="tpl-thumb-inner" style="background:${t.color}">${t.label}</div>
-      </div>
-      <div class="tpl-label">${t.name}</div>
+function adjustAlpha(hex,a){
+  let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+function getContrast(hex){
+  let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return (r*299+g*587+b*114)/1000>150?'#1a1a1a':'#ffffff';
+}
+
+function buildColorDots(id,colors,val,clickFn){
+  let el=document.getElementById(id);
+  el.innerHTML=colors.map(c=>`
+    <div class="cdot${c===val?' active':''}" style="background:${c}" onclick="${clickFn}('${c}',this)"></div>
+  `).join('');
+}
+
+function pickTitleColor(c,el){
+  titleColor=c;
+  document.querySelectorAll('#titleColors .cdot').forEach(d=>d.classList.remove('active'));
+  el.classList.add('active');rr();
+}
+function pickBgColor(c,el){
+  bgColor=c;
+  document.querySelectorAll('#bgColors .cdot').forEach(d=>d.classList.remove('active'));
+  el.classList.add('active');rr();
+}
+
+function buildLayUI(){
+  let el=document.getElementById('layScroll');
+  el.innerHTML=LAYOUTS.map((l,i)=>`
+    <div class="lay-chip${i===0?' active':''}" onclick="pickLay(${i})">
+      <div class="lay-thumb" style="background:${l.bg}"></div>
+      <div class="lay-name">${l.name}</div>
     </div>`).join('');
 }
 
-function pick(i){cur=i;document.querySelectorAll('.tpl-chip').forEach(c=>c.classList.remove('active'));document.getElementById('thumb'+i).parentElement.classList.add('active');r();}
+function pickLay(i){
+  cur=i;titleColor=LAYOUTS[i].color;bgColor=LAYOUTS[i].bg;
+  document.querySelectorAll('.lay-chip').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.lay-scroll .lay-chip')[i].classList.add('active');
+  buildColorDots('titleColors',TITLE_COLORS,titleColor,'pickTitleColor');
+  buildColorDots('bgColors',BG_COLORS,bgColor,'pickBgColor');
+  rr();
+}
 
-function r(){
-  const tag=document.getElementById('tag').value;
-  const title=document.getElementById('title').value;
-  const sub=document.getElementById('sub').value;
-  P.innerHTML=TPLS[cur].render(tag,title,sub);
+function updateSize(){
+  fontSize=parseInt(document.getElementById('sizeSlider').value);
+  document.getElementById('sizeVal').textContent=fontSize+'px';
+  rr();
+}
+
+function rr(){
+  let tag=document.getElementById('tag').value;
+  let title=document.getElementById('title').value;
+  let sub=document.getElementById('sub').value;
+  P.innerHTML=LAYOUTS[cur].render(tag,title,sub,fontSize,titleColor,bgColor);
 }
 
 function demo(){
-  const demos=[
-    {tag:'产后修复',title:'肚子松垮不是胖',sub:'是腹直肌分离，3个动作每天10分钟'},
-    {tag:'健身',title:'八段锦第30天',sub:'从气喘到行云流水，变化太明显'},
-    {tag:'宝妈',title:'二胎妈妈高效一天',sub:'做饭带娃运动，时间这样挤'},
-    {tag:'成长',title:'30岁我重活了一次',sub:'告别产后抑郁的5个方法'},
-    {tag:'婚姻',title:'结婚7年零争吵',sub:'不是忍，是我们约好3件事'},
-    {tag:'育儿',title:'二升三暑假这样过',sub:'不报班不焦虑，每天2小时'},
-    {tag:'健身',title:'7天改善圆肩驼背',sub:'体态比体重重要100倍'},
-    {tag:'修复',title:'腹直肌分离自测',sub:'产后必看！2指以内正常'},
+  let demos=[
+    {tag:'产后修复',title:'肚子松垮不是胖',sub:'是腹直肌分离！3个动作修复'},
+    {tag:'健身',title:'八段锦第30天',sub:'从气喘吁吁到行云流水'},
+    {tag:'宝妈',title:'二胎妈妈一天',sub:'做饭带娃运动，时间这样挤'},
+    {tag:'成长',title:'30岁重活一次',sub:'告别产后抑郁的5件事'},
+    {tag:'婚姻',title:'7年不吵架',sub:'不是忍，是我们有这3个约定'},
+    {tag:'育儿',title:'暑假这样过',sub:'不报班不焦虑，每天2小时'},
+    {tag:'健身',title:'7天改善圆肩',sub:'体态比体重重要100倍'},
+    {tag:'修复',title:'腹直肌自测',sub:'产后必看！2指以内正常'},
   ];
-  const d=demos[Math.floor(Math.random()*demos.length)];
-  const ti=Math.floor(Math.random()*TPLS.length);
+  let d=demos[Math.floor(Math.random()*demos.length)];
+  let li=Math.floor(Math.random()*LAYOUTS.length);
   document.getElementById('tag').value=d.tag;
   document.getElementById('title').value=d.title;
   document.getElementById('sub').value=d.sub;
-  pick(ti);
+  pickLay(li);
 }
 
 function save(){
-  let s=JSON.parse(localStorage.getItem('covers_v3')||'[]');
+  let s=JSON.parse(localStorage.getItem('covers_v4')||'[]');
   s.unshift({
-    tpl:TPLS[cur].id,tag:document.getElementById('tag').value,
-    title:document.getElementById('title').value,
-    sub:document.getElementById('sub').value,
-    time:new Date().toLocaleString()
+    lay:LAYOUTS[cur].id,tag:document.getElementById('tag').value,
+    title:document.getElementById('title').value,sub:document.getElementById('sub').value,
+    titleColor,bgColor,fontSize,time:new Date().toLocaleString()
   });
   if(s.length>20)s=s.slice(0,20);
-  localStorage.setItem('covers_v3',JSON.stringify(s));
+  localStorage.setItem('covers_v4',JSON.stringify(s));
   t('✅ 已保存');
 }
+function t(m){let el=document.getElementById('toast');el.textContent=m;el.classList.add('on');setTimeout(()=>el.classList.remove('on'),1800);}
 
-function t(m){
-  const el=document.getElementById('toast');
-  el.textContent=m;el.classList.add('on');
-  setTimeout(()=>el.classList.remove('on'),1800);
-}
-
-buildTplUI();r();
+buildColorDots('titleColors',TITLE_COLORS,titleColor,'pickTitleColor');
+buildColorDots('bgColors',BG_COLORS,bgColor,'pickBgColor');
+buildLayUI();rr();
 </script>
 </body>
 </html>
