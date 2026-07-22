@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>小红书封面生成器</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "PingFang SC", "Helvetica Neue", sans-serif;
+  background: #FDF6F0;
+  color: #333;
+  min-height: 100dvh;
+  padding-bottom: calc(80px + env(safe-area-inset-bottom));
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #D45161, #F4A261);
+  color: #fff;
+  padding: 24px 20px 20px;
+  text-align: center;
+}
+.header h1 { font-size: 22px; margin-bottom: 4px; }
+.header p { font-size: 13px; opacity: 0.85; }
+
+/* Style Picker */
+.style-picker {
+  display: flex;
+  gap: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.style-chip {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1.5px solid #e0d5cc;
+  background: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.style-chip.active {
+  background: #D45161;
+  color: #fff;
+  border-color: #D45161;
+}
+
+/* Form */
+.form-card {
+  margin: 0 16px 16px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.form-group { margin-bottom: 14px; }
+.form-group:last-child { margin-bottom: 0; }
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  margin-bottom: 6px;
+}
+.form-group input, .form-group textarea, .form-group select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #e8e0d8;
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: inherit;
+  background: #faf7f3;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-group input:focus, .form-group textarea:focus {
+  border-color: #D45161;
+}
+.form-group textarea { resize: none; height: 60px; }
+
+/* Preview */
+.preview-section {
+  margin: 0 16px 16px;
+}
+.preview-section h3 {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+.preview-container {
+  display: flex;
+  justify-content: center;
+}
+.cover-preview {
+  width: 300px;
+  height: 400px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  transition: all 0.3s;
+}
+.cover-bg {
+  position: absolute;
+  inset: 0;
+  transition: background 0.5s;
+}
+.cover-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%);
+}
+.cover-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30px 24px;
+  color: #fff;
+}
+.cover-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  margin-bottom: 10px;
+}
+.cover-title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 6px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.cover-subtitle {
+  font-size: 13px;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+/* Buttons */
+.btn-row {
+  display: flex;
+  gap: 10px;
+  padding: 0 16px 16px;
+}
+.btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #D45161, #e8725a);
+  color: #fff;
+}
+.btn-outline {
+  background: #fff;
+  color: #D45161;
+  border: 1.5px solid #D45161;
+}
+
+/* Pricing */
+.pricing-card {
+  margin: 0 16px 20px;
+  background: linear-gradient(135deg, #fff5f5, #fff0e8);
+  border: 2px solid #D45161;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+}
+.pricing-card h3 { font-size: 18px; margin-bottom: 4px; }
+.pricing-card .price { font-size: 32px; font-weight: 800; color: #D45161; margin: 8px 0; }
+.pricing-card .price span { font-size: 14px; font-weight: 400; color: #888; }
+.pricing-card .features { font-size: 12px; color: #888; line-height: 1.8; margin: 10px 0; }
+.pricing-card .contact {
+  display: inline-block;
+  background: #D45161;
+  color: #fff;
+  padding: 10px 32px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 6px;
+}
+
+/* Bottom */
+.footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 11px;
+  color: #bbb;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎨 小红书封面生成器</h1>
+  <p>选风格 · 填文字 · 一键出图</p>
+</div>
+
+<!-- Style picker -->
+<div class="style-picker" id="stylePicker">
+  <div class="style-chip active" data-style="warm" onclick="pickStyle('warm',this)">🌅 暖色调</div>
+  <div class="style-chip" data-style="fresh" onclick="pickStyle('fresh',this)">🍃 清新绿</div>
+  <div class="style-chip" data-style="purple" onclick="pickStyle('purple',this)">💜 高级紫</div>
+  <div class="style-chip" data-style="dark" onclick="pickStyle('dark',this)">🌙 暗黑风</div>
+  <div class="style-chip" data-style="pink" onclick="pickStyle('pink',this)">🌸 少女粉</div>
+</div>
+
+<!-- Form -->
+<div class="form-card">
+  <div class="form-group">
+    <label>📌 分类标签</label>
+    <select id="tagInput" onchange="updatePreview()">
+      <option value="产后修复">产后修复</option>
+      <option value="健身打卡">健身打卡</option>
+      <option value="宝妈日常">宝妈日常</option>
+      <option value="育儿干货">育儿干货</option>
+      <option value="自我成长">自我成长</option>
+      <option value="婚姻经营">婚姻经营</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>✏️ 大标题</label>
+    <input id="titleInput" placeholder="例如：产后肚子收不回去？" maxlength="20" oninput="updatePreview()">
+  </div>
+  <div class="form-group">
+    <label>📝 副标题（选填）</label>
+    <textarea id="subtitleInput" placeholder="例如：不是胖！是腹直肌分离！" maxlength="60" oninput="updatePreview()"></textarea>
+  </div>
+</div>
+
+<!-- Preview -->
+<div class="preview-section">
+  <h3>📱 封面预览</h3>
+  <div class="preview-container">
+    <div class="cover-preview" id="coverPreview">
+      <div class="cover-bg" id="coverBg"></div>
+      <div class="cover-overlay"></div>
+      <div class="cover-content">
+        <div class="cover-tag" id="coverTag">产后修复</div>
+        <div class="cover-title" id="coverTitle">你的标题</div>
+        <div class="cover-subtitle" id="coverSubtitle">副标题显示在这里</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Buttons -->
+<div class="btn-row">
+  <button class="btn btn-outline" onclick="randomFill()">🎲 随机示例</button>
+  <button class="btn btn-primary" onclick="saveDesign()">💾 保存设计</button>
+</div>
+
+<!-- Pricing -->
+<div class="pricing-card">
+  <h3>🔑 解锁全部功能</h3>
+  <div class="price">¥29<span>/永久</span></div>
+  <div class="features">
+    ✅ 20+封面模板<br>
+    ✅ AI一键生成<br>
+    ✅ 高清原图下载<br>
+    ✅ 不限使用次数
+  </div>
+  <a class="contact" href="javascript:void(0)" onclick="showContact()">📱 加微信解锁</a>
+</div>
+
+<div class="footer">dandan-freefun · 封面生成器演示版</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════ Style Config ═══════
+const styles = {
+  warm: {
+    bg: ['#e8725a', '#D45161', '#F4A261', '#f0936a'],
+    gradient: 'linear-gradient(135deg, #e8725a, #D45161)',
+    tagBg: 'rgba(255,255,255,0.2)'
+  },
+  fresh: {
+    bg: ['#7ecb96', '#4a9e6b', '#6db87d', '#88c999'],
+    gradient: 'linear-gradient(135deg, #5db87d, #3d8a55)',
+    tagBg: 'rgba(255,255,255,0.25)'
+  },
+  purple: {
+    bg: ['#9b7ecb', '#7b5ea7', '#b095dc', '#8e6fc4'],
+    gradient: 'linear-gradient(135deg, #8b6fc0, #5e4590)',
+    tagBg: 'rgba(255,255,255,0.2)'
+  },
+  dark: {
+    bg: ['#3a3a4a', '#2a2a38', '#4a4a5a', '#333345'],
+    gradient: 'linear-gradient(135deg, #2a2a38, #1a1a28)',
+    tagBg: 'rgba(255,255,255,0.15)'
+  },
+  pink: {
+    bg: ['#f5a0b5', '#e8899e', '#f8b8c8', '#f090a8'],
+    gradient: 'linear-gradient(135deg, #f090a8, #d47088)',
+    tagBg: 'rgba(255,255,255,0.25)'
+  }
+};
+
+let currentStyle = 'warm';
+
+// ═══════ Demo examples ═══════
+const examples = [
+  { tag: '产后修复', title: '产后肚子收不回去？', subtitle: '不是胖！是腹直肌分离！3个动作每天10分钟' },
+  { tag: '健身打卡', title: '八段锦第30天', subtitle: '从气喘吁吁到行云流水，变化太明显了' },
+  { tag: '宝妈日常', title: '二胎妈妈的一天', subtitle: '带娃+运动+做饭，时间是这样挤出来的' },
+  { tag: '自我成长', title: '30岁重启人生', subtitle: '产后抑郁到找回自己，我做了这5件事' },
+  { tag: '婚姻经营', title: '结婚7年不吵架', subtitle: '不是忍，是我们约定了这3个规则' },
+  { tag: '育儿干货', title: '二升三暑假这样过', subtitle: '不报班不焦虑，每天2小时轻松搞定' },
+];
+
+function pickStyle(style, el) {
+  currentStyle = style;
+  document.querySelectorAll('.style-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  updatePreview();
+}
+
+function updatePreview() {
+  const tag = document.getElementById('tagInput').value || '分类标签';
+  const title = document.getElementById('titleInput').value || '你的标题';
+  const subtitle = document.getElementById('subtitleInput').value || '副标题显示在这里';
+  const s = styles[currentStyle];
+  
+  document.getElementById('coverBg').style.background = s.gradient;
+  document.getElementById('coverTag').textContent = tag;
+  document.getElementById('coverTag').style.background = s.tagBg;
+  document.getElementById('coverTitle').textContent = title;
+  document.getElementById('coverSubtitle').textContent = subtitle;
+}
+
+function randomFill() {
+  const ex = examples[Math.floor(Math.random() * examples.length)];
+  const styleKeys = Object.keys(styles);
+  const randomStyle = styleKeys[Math.floor(Math.random() * styleKeys.length)];
+  
+  document.getElementById('tagInput').value = ex.tag;
+  document.getElementById('titleInput').value = ex.title;
+  document.getElementById('subtitleInput').value = ex.subtitle;
+  
+  currentStyle = randomStyle;
+  document.querySelectorAll('.style-chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.style === randomStyle);
+  });
+  
+  updatePreview();
+  showToast('🎲 随机生成了一组！');
+}
+
+function saveDesign() {
+  const design = {
+    style: currentStyle,
+    tag: document.getElementById('tagInput').value,
+    title: document.getElementById('titleInput').value,
+    subtitle: document.getElementById('subtitleInput').value,
+    time: new Date().toLocaleString()
+  };
+  
+  let saved = JSON.parse(localStorage.getItem('coverDesigns') || '[]');
+  saved.unshift(design);
+  if (saved.length > 10) saved = saved.slice(0, 10);
+  localStorage.setItem('coverDesigns', JSON.stringify(saved));
+  showToast('✅ 已保存！');
+}
+
+function showContact() {
+  showToast('📱 请加微信：dandan_freefun');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ═══════ INIT ═══════
+updatePreview();
+</script>
+</body>
+</html>
