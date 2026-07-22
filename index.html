@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>🌟 暑假闯关计划</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fce4ec,#f3e5f5,#e8eaf6);min-height:100dvh;padding-bottom:env(safe-area-inset-bottom);-webkit-tap-highlight-color:transparent;user-select:none}
+.header{text-align:center;padding:24px 16px 12px;position:relative}
+.header h1{font-size:26px;background:linear-gradient(135deg,#e91e63,#9c27b0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.header .sub{font-size:13px;color:#999}
+.star-bar{display:flex;justify-content:center;align-items:center;gap:8px;margin:8px 0;flex-wrap:wrap}
+.star-badge{background:white;border-radius:20px;padding:8px 16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);font-size:15px;display:flex;align-items:center;gap:6px}
+.star-badge .icon{font-size:22px}
+.star-badge .num{font-weight:700;color:#e91e63;font-size:22px}
+.level-tag{background:linear-gradient(135deg,#ffd54f,#ffab00);color:#5d4037;border-radius:12px;padding:4px 12px;font-size:12px;font-weight:600}
+
+.progress-wrap{padding:0 16px;margin-bottom:8px}
+.progress-bar{height:10px;background:#e0e0e0;border-radius:5px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#ff80ab,#ce93d8,#90caf9);border-radius:5px;transition:width .5s ease}
+.progress-text{text-align:center;font-size:11px;color:#999;margin-top:4px}
+
+.week-nav{display:flex;justify-content:center;gap:6px;padding:0 12px;margin:16px 0;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.week-btn{flex-shrink:0;width:44px;height:44px;border-radius:50%;border:2px solid #e0e0e0;background:white;font-size:12px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .2s;color:#888;line-height:1.1}
+.week-btn.today{border-color:#e91e63;background:#fce4ec;color:#e91e63}
+.week-btn.active{border-color:#9c27b0;background:#f3e5f5;color:#9c27b0;transform:scale(1.08)}
+.week-btn .day{font-size:11px}
+.week-btn .date{font-size:10px}
+.week-btn.weekend{background:#fff3e0;border-color:#ffcc80;color:#e65100}
+
+.day-label{text-align:center;font-size:18px;font-weight:700;color:#5d4037;margin:8px 0;padding:0 16px}
+
+.task-list{padding:0 16px;display:flex;flex-direction:column;gap:12px}
+.task-card{background:white;border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;align-items:center;gap:12px;transition:all .3s;cursor:pointer;position:relative;overflow:hidden}
+.task-card.done{background:#f1f8e9;box-shadow:0 2px 12px rgba(76,175,80,0.15)}
+.task-card .emoji{font-size:36px;flex-shrink:0}
+.task-card .info{flex:1;min-width:0}
+.task-card .name{font-size:16px;font-weight:600;color:#333;margin-bottom:2px}
+.task-card .detail{font-size:12px;color:#999}
+.task-card .check{width:32px;height:32px;border-radius:50%;border:2px solid #ddd;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s}
+.task-card.done .check{border-color:#4caf50;background:#4caf50;color:white}
+.task-card .star-pop{position:absolute;right:50px;top:10px;font-size:24px;animation:starUp .6s ease-out forwards;pointer-events:none}
+@keyframes starUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-30px) scale(1.5)}}
+
+.section-title{font-size:14px;font-weight:700;color:#999;padding:16px 16px 4px;text-transform:uppercase;letter-spacing:1px}
+
+.reward-shop{padding:16px;display:flex;flex-direction:column;gap:10px}
+.reward-card{background:white;border-radius:14px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,0.05);display:flex;align-items:center;gap:10px}
+.reward-card .icon{font-size:28px}
+.reward-card .info{flex:1}
+.reward-card .title{font-size:15px;font-weight:600;color:#333}
+.reward-card .cost{font-size:12px;color:#e91e63;font-weight:600}
+.reward-card .btn{background:linear-gradient(135deg,#e91e63,#9c27b0);color:white;border:none;border-radius:20px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.reward-card .btn:disabled{background:#ccc;cursor:not-allowed}
+.reward-card.claimed{opacity:.5}
+.reward-card.claimed .btn{background:#4caf50}
+
+.tab-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:8px 0 env(safe-area-inset-bottom);box-shadow:0 -2px 12px rgba(0,0,0,0.06);z-index:100}
+.tab-btn{background:none;border:none;font-size:13px;color:#999;padding:6px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .2s}
+.tab-btn.active{color:#e91e63;font-weight:700}
+.tab-btn .tab-icon{font-size:24px}
+.page-bottom{padding-bottom:90px}
+
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal-box{background:white;border-radius:20px;padding:24px;text-align:center;max-width:280px;width:90%}
+.modal-box .icon{font-size:48px;margin-bottom:8px}
+.modal-box .msg{font-size:16px;font-weight:600;color:#333;margin-bottom:16px}
+.modal-box button{background:linear-gradient(135deg,#e91e63,#9c27b0);color:white;border:none;border-radius:20px;padding:10px 32px;font-size:15px;font-weight:600;cursor:pointer}
+
+.rest-banner{text-align:center;padding:40px 16px}
+.rest-banner .icon{font-size:60px}
+.rest-banner .text{font-size:18px;color:#888;margin-top:12px}
+.rest-banner .sub{font-size:13px;color:#bbb;margin-top:4px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🌟 暑假闯关计划</h1>
+  <div class="sub" id="dateLabel"></div>
+  <div class="star-bar">
+    <div class="star-badge"><span class="icon">⭐</span><span class="num" id="totalStars">0</span><span style="font-size:13px;color:#999">颗星星</span></div>
+    <div class="level-tag" id="levelTag">🌱 小萌芽</div>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
+  <div class="progress-text" id="progressText">今天还没有打卡哦~</div>
+</div>
+
+<div class="week-nav" id="weekNav"></div>
+
+<div class="page-bottom">
+
+  <div id="tabDay">
+    <div class="day-label" id="dayLabel"></div>
+    <div id="restBanner" class="rest-banner" style="display:none">
+      <div class="icon">🎉</div>
+      <div class="text">今天是休息日！</div>
+      <div class="sub">周末尽情玩，不学习~</div>
+      <div style="margin-top:16px;background:white;border-radius:14px;padding:16px;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,0.05);max-width:340px;margin-left:auto;margin-right:auto">
+        <div style="font-size:14px;font-weight:700;color:#e91e63;margin-bottom:8px">📋 有空可以做这些：</div>
+        <div style="font-size:12px;color:#666;line-height:1.8">
+          🌿 背1首古诗（大自然主题）<br>
+          📚 读《小王子》或《安徒生童话》<br>
+          ☁️ 补记这几天漏掉的天气<br>
+          ✏️ 试试创编1道应用题<br>
+          🎨 想想诗配画怎么画
+        </div>
+      </div>
+    </div>
+    <div id="taskArea" class="task-list"></div>
+  </div>
+
+  <div id="tabReward" style="display:none">
+    <div class="reward-shop" id="rewardList"></div>
+  </div>
+
+  <div id="tabBadge" style="display:none">
+    <div style="padding:16px">
+      <div style="background:white;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);text-align:center">
+        <div style="font-size:60px;margin-bottom:8px">🏆</div>
+        <div style="font-size:20px;font-weight:700;color:#333;margin-bottom:4px" id="badgeTitle">小萌芽</div>
+        <div style="font-size:13px;color:#999;margin-bottom:12px" id="badgeDesc">刚刚开始暑假闯关之旅</div>
+        <div style="background:#fce4ec;border-radius:12px;padding:12px">
+          <div style="font-size:14px;color:#666">累计完成</div>
+          <div style="font-size:32px;font-weight:700;color:#e91e63" id="totalDone">0</div>
+          <div style="font-size:12px;color:#999">次学习任务</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('day')"><span class="tab-icon">📋</span>今日任务</button>
+  <button class="tab-btn" onclick="switchTab('reward')"><span class="tab-icon">🎁</span>兑换奖励</button>
+  <button class="tab-btn" onclick="switchTab('badge')"><span class="tab-icon">🏆</span>我的成就</button>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="icon" id="modalIcon">🎉</div>
+    <div class="msg" id="modalMsg"></div>
+    <button onclick="closeModal()">好的！</button>
+  </div>
+</div>
+
+<script>
+// ═══════ 数据结构 ═══════
+const TASKS = [
+  {id:'chinese',emoji:'📖',name:'语文基础',detail:'字词听写 + 背1首古诗'},
+  {id:'math',emoji:'🧮',name:'口算+天气',detail:'口算20道 + 记录今日天气☁️'},
+  {id:'english',emoji:'🔤',name:'英语启蒙',detail:'听儿歌 + 跟读'},
+  {id:'idiom',emoji:'📝',name:'成语闯关',detail:'2个成语 · 会用才算过'}
+];
+
+
+const IDIOMS = [
+  {word:'一心一意',meaning:'专心做一件事，不分心',example:'做口算的时候要一心一意，不能边做边玩。'},
+  {word:'三心二意',meaning:'心里想着好几个事，不专心',example:'写作业不能三心二意，不然容易出错。'},
+  {word:'四面八方',meaning:'各个方向，到处',example:'公园里从四面八方飞来好多小鸟。'},
+  {word:'五光十色',meaning:'颜色很多，非常好看',example:'雨后的彩虹五光十色，美极了。'},
+  {word:'七上八下',meaning:'心里很紧张，不踏实',example:'考试前我的心七上八下的。'},
+  {word:'画蛇添足',meaning:'做了多余的事，反而不好',example:'妈妈叫我吃饭就够吃了，还端水果过来，真是画蛇添足。'},
+  {word:'守株待兔',meaning:'不主动努力，等着好事自己来',example:'学习不能守株待兔，要主动复习才行。'},
+  {word:'亡羊补牢',meaning:'出了问题及时补救，还不算晚',example:'错题订正就是亡羊补牢，改过来就记住了。'},
+  {word:'叶公好龙',meaning:'嘴上说喜欢，真到了面前反而害怕',example:'她说喜欢小狗，结果小狗跑过来她就躲，真是叶公好龙。'},
+  {word:'春暖花开',meaning:'春天暖和，花都开了',example:'等到春暖花开的时候，我们去公园野餐。'},
+  {word:'秋高气爽',meaning:'秋天天空明朗，空气清爽',example:'秋高气爽的天气最适合放风筝了。'},
+  {word:'鸟语花香',meaning:'鸟儿叫、花儿香，景色很美',example:'清晨的公园里鸟语花香，真舒服。'},
+  {word:'山清水秀',meaning:'山很绿、水很清，风景优美',example:'爸爸带我们去了一个山清水秀的地方。'},
+  {word:'自言自语',meaning:'自己跟自己说话',example:'她一边画画一边自言自语，特别可爱。'},
+  {word:'东张西望',meaning:'到处看，不专注',example:'上课不能东张西望，要认真听讲。'},
+  {word:'哈哈大笑',meaning:'非常开心地大笑',example:'弟弟做了一个鬼脸，把全家逗得哈哈大笑。'},
+  {word:'蹦蹦跳跳',meaning:'高兴地跳来跳去',example:'放学的时候小朋友们蹦蹦跳跳地走出校门。'},
+  {word:'对牛弹琴',meaning:'跟听不懂的人讲道理，白费劲',example:'教弟弟做数学题就像对牛弹琴，他根本听不懂。'},
+  {word:'井底之蛙',meaning:'见识少，只看到一点点',example:'多看书就不会做井底之蛙啦。'},
+  {word:'狐假虎威',meaning:'借着别人的威风吓人',example:'哥哥狐假虎威地说"妈妈说了不准吃糖"。'},
+  {word:'半途而废',meaning:'做一半就不做了',example:'弹钢琴要坚持到底，不能半途而废。'},
+  {word:'自相矛盾',meaning:'说话前后不一致，自己打自己脸',example:'你刚说吃饱了，又去拿零食，这不是自相矛盾吗？'},
+  {word:'掩耳盗铃',meaning:'自己骗自己，明明遮不住还假装不知道',example:'把错题藏起来不订正，就是掩耳盗铃。'},
+  {word:'刻舟求剑',meaning:'方法死板，不懂变通',example:'这道题换个数就不会做了？不能刻舟求剑啊。'},
+  {word:'异想天开',meaning:'想法很奇特，不切实际',example:'她想养一只会说话的猫，真是异想天开。'},
+  {word:'无忧无虑',meaning:'没有烦恼，很快乐',example:'小鸟在树上无忧无虑地唱歌。'},
+  {word:'百发百中',meaning:'每次都中，很厉害',example:'爸爸投篮百发百中，太厉害了。'},
+  {word:'千变万化',meaning:'变化非常多',example:'夏天的天气千变万化，一会儿晴一会儿雨。'},
+  {word:'万紫千红',meaning:'很多花开了，五颜六色',example:'春天到了，花园里万紫千红。'},
+  {word:'风和日丽',meaning:'风很轻、阳光很美',example:'风和日丽的日子最适合出去玩啦。'},
+  {word:'兴高采烈',meaning:'非常开心、兴奋',example:'听说要去游乐园，她兴高采烈地跳了起来。'},
+  {word:'目不转睛',meaning:'眼睛一眨不眨地盯着看',example:'她目不转睛地看着动画片，饭都忘了吃。'},
+  {word:'齐心协力',meaning:'大家一起努力',example:'全家人齐心协力把房间收拾得干干净净。'}
+];
+const REWARDS = [
+  {id:'ice',icon:'🍦',title:'一个冰淇淋',cost:3,desc:'夏天怎么能少了冰淇淋'},
+  {id:'play',icon:'🎪',title:'多玩20分钟',cost:5,desc:'iPad/看电视加时'},
+  {id:'park',icon:'🏞️',title:'去公园玩一次',cost:10,desc:'想去哪个公园都行'},
+  {id:'toy',icon:'🧸',title:'选一个小玩具',cost:15,desc:'50元以内随便挑'},
+  {id:'movie',icon:'🎬',title:'看电影/动画',cost:20,desc:'电影院或在家都行'},
+  {id:'trip',icon:'🎡',title:'去一次游乐园',cost:40,desc:'月度终极奖励！'}
+];
+
+const LEVELS = [
+  {min:0,title:'小萌芽',icon:'🌱',desc:'刚刚开始暑假闯关之旅'},
+  {min:10,title:'小树苗',icon:'🌿',desc:'坚持就是胜利！'},
+  {min:25,title:'小花苞',icon:'🌸',desc:'越来越棒了~'},
+  {min:50,title:'小花朵',icon:'🌺',desc:'妈妈为你骄傲！'},
+  {min:80,title:'小太阳',icon:'☀️',desc:'你是学习小达人！'},
+  {min:120,title:'超级明星',icon:'👑',desc:'烟雨的首席CEO亲自颁发勋章！'}
+];
+
+const STORAGE_KEY = 'summer_plan_data';
+
+// ═══════ 数据管理 ═══════
+function getTodayIdioms(){
+  const today = new Date();
+  const seed = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
+  const a = seed % IDIOMS.length;
+  const b = (seed * 7 + 13) % IDIOMS.length;
+  return a===b ? [IDIOMS[a], IDIOMS[(a+1)%IDIOMS.length]] : [IDIOMS[a], IDIOMS[b]];
+}
+
+function loadData(){
+  try{
+    const d = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if(d && typeof d.stars==='number') return d;
+  }catch(e){}
+  return {stars:0, done:{}, rewards:{}, totalDone:0};
+}
+
+function saveData(d){
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(d));
+}
+
+// ═══════ 日期工具 ═══════
+function getDateKey(d){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function isWeekend(d){
+  return d.getDay()===0 || d.getDay()===6;
+}
+
+function getWeekDates(){
+  const today = new Date();
+  const day = today.getDay(); // 0=Sun, 1=Mon...
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - (day===0?6:day-1));
+  const dates = [];
+  for(let i=0;i<7;i++){
+    const d = new Date(monday);
+    d.setDate(monday.getDate()+i);
+    dates.push(d);
+  }
+  return dates;
+}
+
+const DAY_NAMES = ['日','一','二','三','四','五','六'];
+
+// ═══════ 渲染 ═══════
+let currentTab = 'day';
+
+function switchTab(tab){
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.tab-btn[onclick*="${tab}"]`)?.classList.add('active');
+  document.getElementById('tabDay').style.display = tab==='day'?'block':'none';
+  document.getElementById('tabReward').style.display = tab==='reward'?'block':'none';
+  document.getElementById('tabBadge').style.display = tab==='badge'?'block':'none';
+  if(tab==='reward') renderRewards();
+  if(tab==='badge') renderBadge();
+}
+
+function renderAll(){
+  const data = loadData();
+  const today = new Date();
+  const todayKey = getDateKey(today);
+  document.getElementById('dateLabel').textContent = `${today.getFullYear()}年${today.getMonth()+1}月${today.getDate()}日 星期${DAY_NAMES[today.getDay()]}`;
+  
+  // 星星
+  document.getElementById('totalStars').textContent = data.stars;
+  
+  // 等级
+  let level = LEVELS[0];
+  for(let i=LEVELS.length-1;i>=0;i--){
+    if(data.stars >= LEVELS[i].min){ level = LEVELS[i]; break; }
+  }
+  document.getElementById('levelTag').textContent = `${level.icon} ${level.title}`;
+  
+  // 进度条
+  const todayDone = data.done[todayKey] || [];
+  const pct = Math.round((todayDone.length / TASKS.length) * 100);
+  document.getElementById('progressBar').style.width = pct+'%';
+  if(pct===0) document.getElementById('progressText').textContent = '今天还没有打卡哦~';
+  else if(pct===100) document.getElementById('progressText').textContent = '🎉 今天全部完成！太棒了！';
+  else document.getElementById('progressText').textContent = `今日进度 ${todayDone.length}/${TASKS.length}`;
+  
+  // 周导航
+  renderWeekNav(today, todayKey);
+  
+  // 任务列表
+  renderTasks(today, todayKey, data);
+  
+  // 奖励
+  if(currentTab==='reward') renderRewards();
+  if(currentTab==='badge') renderBadge();
+}
+
+function renderWeekNav(today, todayKey){
+  const dates = getWeekDates();
+  const todayStr = getDateKey(today);
+  const html = dates.map(d=>{
+    const key = getDateKey(d);
+    const cls = [key===todayStr?'today':'', key===todayKey?'active':''];
+    if(isWeekend(d)) cls.push('weekend');
+    return `<button class="week-btn ${cls.join(' ')}" onclick="selectDay('${key}')">
+      <span class="day">周${DAY_NAMES[d.getDay()]}</span>
+      <span class="date">${d.getMonth()+1}/${d.getDate()}</span>
+    </button>`;
+  }).join('');
+  document.getElementById('weekNav').innerHTML = html;
+}
+
+function renderTasks(day, todayKey, data){
+  if(isWeekend(day)){
+    document.getElementById('restBanner').style.display = 'block';
+    document.getElementById('taskArea').innerHTML = '';
+    document.getElementById('dayLabel').textContent = '';
+    return;
+  }
+  document.getElementById('restBanner').style.display = 'none';
+  document.getElementById('dayLabel').textContent = `📅 ${day.getMonth()+1}月${day.getDate()}日 今日任务`;
+  
+  const doneSet = new Set(data.done[todayKey]||[]);
+  const html = TASKS.map((t,i)=>{
+    const isDone = doneSet.has(t.id);
+    return `<div class="task-card ${isDone?'done':''}" onclick="toggleTask('${t.id}')" id="card-${t.id}">
+      <div class="emoji">${t.emoji}</div>
+      <div class="info">
+        <div class="name">${t.name}</div>
+        <div class="detail">${t.detail}</div>
+      </div>
+      <div class="check">${isDone?'✓':''}</div>
+    </div>`;
+  }).join('');
+  const idioms = getTodayIdioms();
+  const idiomHtml = `<div class="idiom-box">
+    <div class="title">📖 今日成语</div>
+    ${idioms.map(i=>`
+      <div class="idiom-item">
+        <div class="word">${i.word}</div>
+        <div class="info">
+          <div class="meaning">${i.meaning}</div>
+          <div class="example">${i.example}</div>
+        </div>
+      </div>
+    `).join('')}
+  </div>`;
+  document.getElementById('taskArea').innerHTML = html + idiomHtml;
+}
+
+// ═══════ 操作 ═══════
+function toggleTask(taskId){
+  const data = loadData();
+  const today = new Date();
+  const todayKey = getDateKey(today);
+  
+  if(!data.done[todayKey]) data.done[todayKey] = [];
+  const idx = data.done[todayKey].indexOf(taskId);
+  
+  if(taskId==='idiom' && idx < 0){
+    showIdiomModal();
+    return;
+  }
+  
+  if(idx >= 0){
+    // 取消完成
+    data.done[todayKey].splice(idx,1);
+    data.stars = Math.max(0, data.stars - 1);
+    data.totalDone = Math.max(0, data.totalDone - 1);
+  } else {
+    // 完成
+    data.done[todayKey].push(taskId);
+    data.stars += 1;
+    data.totalDone = (data.totalDone||0) + 1;
+    showStarPop(taskId);
+  }
+  
+  saveData(data);
+  renderAll();
+}
+
+function showStarPop(taskId){
+  const card = document.getElementById('card-'+taskId);
+  if(!card) return;
+  const pop = document.createElement('div');
+  pop.className = 'star-pop';
+  pop.textContent = '⭐';
+  card.appendChild(pop);
+  setTimeout(()=>pop.remove(), 600);
+}
+
+function claimReward(rewardId){
+  const data = loadData();
+  const reward = REWARDS.find(r=>r.id===rewardId);
+  if(!reward || data.stars < reward.cost) return;
+  
+  data.stars -= reward.cost;
+  if(!data.rewards) data.rewards = {};
+  data.rewards[rewardId] = (data.rewards[rewardId]||0) + 1;
+  saveData(data);
+  
+  showModal('🎁', `成功兑换「${reward.title}」！\n还剩下 ${data.stars} 颗⭐`);
+  renderAll();
+}
+
+function renderRewards(){
+  const data = loadData();
+  const html = REWARDS.map(r=>{
+    return `<div class="reward-card">
+      <div class="icon">${r.icon}</div>
+      <div class="info">
+        <div class="title">${r.title}</div>
+        <div class="cost">💎 ${r.cost} 颗星星</div>
+      </div>
+      <button class="btn" onclick="claimReward('${r.id}')" ${data.stars < r.cost ? 'disabled' : ''}>
+        ${data.stars < r.cost ? '还不够' : '兑换'}
+      </button>
+    </div>`;
+  }).join('');
+  document.getElementById('rewardList').innerHTML = html;
+}
+
+function renderBadge(){
+  const data = loadData();
+  let level = LEVELS[0];
+  for(let i=LEVELS.length-1;i>=0;i--){
+    if(data.stars >= LEVELS[i].min){ level = LEVELS[i]; break; }
+  }
+  document.getElementById('badgeTitle').textContent = `${level.icon} ${level.title}`;
+  document.getElementById('badgeDesc').textContent = level.desc;
+  document.getElementById('totalDone').textContent = data.totalDone||0;
+}
+
+function showModal(icon, msg){
+  document.getElementById('modalIcon').textContent = icon;
+  document.getElementById('modalMsg').textContent = msg;
+  document.getElementById('modal').classList.add('show');
+}
+
+function showIdiomModal(){
+  const idioms = getTodayIdioms();
+  document.getElementById('modalIcon').textContent = '📝';
+  document.getElementById('modalMsg').innerHTML = `<div class="idiom-modal">
+    <div class="word-big"><span style="font-size:40px">📖</span> ${idioms[0].word}</div>
+    <div class="meaning-big">${idioms[0].meaning}</div>
+    <div class="example-big">${idioms[0].example}</div>
+    <div class="divider">✨ ✨ ✨</div>
+    <div class="word-big"><span style="font-size:40px">📖</span> ${idioms[1].word}</div>
+    <div class="meaning-big">${idioms[1].meaning}</div>
+    <div class="example-big">${idioms[1].example}</div>
+  </div>`;
+  document.getElementById('modal').classList.add('show');
+  var btn = document.querySelector('.modal-box button');
+  btn.textContent = '我学会了！✓';
+  btn.onclick = confirmIdiom;
+}
+
+function confirmIdiom(){
+  closeModal();
+  var btn = document.querySelector('.modal-box button');
+  btn.textContent = '好的！';
+  btn.onclick = closeModal;
+  const data = loadData();
+  const today = new Date();
+  const todayKey = getDateKey(today);
+  if(!data.done[todayKey]) data.done[todayKey] = [];
+  if(data.done[todayKey].indexOf('idiom') < 0){
+    data.done[todayKey].push('idiom');
+    data.stars += 1;
+    data.totalDone = (data.totalDone||0) + 1;
+    saveData(data);
+    renderAll();
+  }
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('show');
+}
+
+function selectDay(key){
+  // 简单处理：切换周导航中的日期，显示当天的任务
+  // 实际以今天为主，这里只做视觉反馈
+}
+
+// ═══════ INIT ═══════
+document.addEventListener('DOMContentLoaded', ()=>{
+  renderAll();
+  switchTab('day');
+});
+</script>
+</body>
+</html>
