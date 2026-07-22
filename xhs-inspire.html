@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>💡 小红书灵感本</title>
+<style>
+:root {
+  --coral: #D45161;
+  --coral-light: #FDE8EB;
+  --amber: #F4A261;
+  --amber-light: #FFF3E6;
+  --bg: #FDF6F0;
+  --card: #FFFFFF;
+  --text: #2D2D2D;
+  --text-light: #8B7E74;
+  --border: #EDE4DC;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --safe-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(253,246,240,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.header-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.header-title {
+  font-size: 22px; font-weight: 700;
+  display: flex; align-items: center; gap: 6px;
+}
+.header-stats {
+  font-size: 13px; color: var(--text-light);
+  background: var(--card);
+  padding: 6px 14px; border-radius: 20px;
+  box-shadow: var(--shadow);
+}
+
+/* ── Search + Filter ── */
+.search-bar {
+  display: flex; gap: 8px; align-items: center;
+}
+.search-input {
+  flex: 1; height: 40px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px; padding: 0 16px;
+  font-size: 15px; background: var(--card);
+  color: var(--text); outline: none;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--coral); }
+.filter-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.filter-btn.active { background: var(--coral); border-color: var(--coral); color: white; }
+
+/* ── Category Chips ── */
+.cat-chips {
+  display: flex; gap: 8px; padding: 12px 20px;
+  overflow-x: auto; scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.cat-chips::-webkit-scrollbar { display: none; }
+.cat-chip {
+  flex-shrink: 0; padding: 8px 16px;
+  border-radius: 20px; font-size: 13px; font-weight: 500;
+  border: 1.5px solid var(--border);
+  background: var(--card); color: var(--text-light);
+  cursor: pointer; transition: all 0.2s;
+  white-space: nowrap; user-select: none;
+}
+.cat-chip.active {
+  background: var(--coral); color: white;
+  border-color: var(--coral);
+  box-shadow: 0 4px 12px rgba(212,81,97,0.25);
+}
+
+/* ── List ── */
+.list { padding: 0 16px 120px; }
+.empty-state {
+  text-align: center; padding: 60px 20px; color: var(--text-light);
+}
+.empty-state .icon { font-size: 56px; margin-bottom: 16px; }
+.empty-state p { font-size: 15px; line-height: 1.6; }
+
+.card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 16px; margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  position: relative; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  border: 1px solid transparent;
+}
+.card:active { transform: scale(0.985); }
+.card-top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 10px; margin-bottom: 8px;
+}
+.card-title { font-size: 16px; font-weight: 600; flex: 1; line-height: 1.4; }
+.card-cat {
+  flex-shrink: 0; font-size: 11px; padding: 3px 10px;
+  border-radius: 12px; font-weight: 500;
+}
+.cat-八段锦 { background: #E8F5E9; color: #2E7D32; }
+.cat-产后修复 { background: #FCE4EC; color: #C62828; }
+.cat-自我成长 { background: #E3F2FD; color: #1565C0; }
+.cat-婚姻经营 { background: #F3E5F5; color: #6A1B9A; }
+.cat-育儿日常 { background: #FFF3E0; color: #E65100; }
+.cat-其他灵感 { background: #F5F5F5; color: #616161; }
+
+.card-preview {
+  font-size: 14px; color: var(--text-light);
+  line-height: 1.5; margin-bottom: 10px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-footer {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 12px; color: var(--text-light);
+}
+.card-footer .tags {
+  display: flex; gap: 4px; flex-wrap: wrap;
+}
+.card-footer .tag {
+  background: var(--bg); padding: 2px 8px;
+  border-radius: 10px; font-size: 11px;
+}
+.card-time { margin-left: auto; flex-shrink: 0; }
+
+/* ── FAB ── */
+.fab {
+  position: fixed; bottom: calc(32px + var(--safe-bottom));
+  right: 20px; width: 56px; height: 56px; border-radius: 50%;
+  background: var(--coral); color: white; border: none;
+  font-size: 28px; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(212,81,97,0.4);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  z-index: 90;
+}
+.fab:active { transform: scale(0.9); }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.35);
+  display: flex; align-items: flex-end;
+  animation: fadeIn 0.2s;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+  background: var(--card); border-radius: 20px 20px 0 0;
+  width: 100%; max-height: 88vh; max-height: 88dvh;
+  overflow-y: auto; padding: 24px 20px;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.modal-header h3 { font-size: 18px; font-weight: 700; }
+.modal-close {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--bg); border: none; font-size: 20px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+
+.form-group { margin-bottom: 18px; }
+.form-label {
+  font-size: 13px; font-weight: 600; color: var(--text-light);
+  margin-bottom: 6px; display: block;
+}
+.form-input, .form-textarea {
+  width: 100%; border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 14px;
+  font-size: 15px; font-family: inherit; color: var(--text);
+  background: var(--bg); outline: none; resize: vertical;
+  transition: border-color 0.2s;
+}
+.form-input:focus, .form-textarea:focus { border-color: var(--coral); }
+.form-textarea { min-height: 100px; line-height: 1.6; }
+
+.cat-select { display: flex; flex-wrap: wrap; gap: 8px; }
+.cat-option {
+  padding: 10px 18px; border-radius: 20px; font-size: 14px;
+  border: 1.5px solid var(--border); background: var(--card);
+  cursor: pointer; transition: all 0.2s; user-select: none;
+}
+.cat-option.selected {
+  background: var(--coral); color: white; border-color: var(--coral);
+}
+
+.btn-row { display: flex; gap: 10px; margin-top: 24px; }
+.btn {
+  flex: 1; padding: 14px; border-radius: var(--radius-sm);
+  font-size: 16px; font-weight: 600; cursor: pointer;
+  border: none; transition: all 0.2s;
+}
+.btn-primary { background: var(--coral); color: white; }
+.btn-primary:active { background: #C04555; }
+.btn-outline { background: var(--card); color: var(--coral); border: 1.5px solid var(--coral); }
+.btn-outline:active { background: var(--coral-light); }
+
+/* ── Detail Modal ── */
+.detail-content { padding: 8px 0; }
+.detail-content h2 { font-size: 20px; margin-bottom: 12px; line-height: 1.4; }
+.detail-cat { display: inline-block; margin-bottom: 16px; }
+.detail-body {
+  font-size: 15px; line-height: 1.8; color: var(--text);
+  white-space: pre-wrap; margin-bottom: 16px;
+}
+.detail-source a {
+  color: var(--coral); font-size: 13px; word-break: break-all;
+}
+.detail-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+.detail-tag { background: var(--bg); padding: 4px 12px; border-radius: 12px; font-size: 12px; }
+.detail-actions { display: flex; gap: 8px; margin-top: 20px; }
+.detail-actions .btn { font-size: 14px; padding: 10px; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+  background: #333; color: white; padding: 10px 24px;
+  border-radius: 20px; font-size: 14px; z-index: 300;
+  animation: toastIn 0.3s, toastOut 0.3s 1.7s forwards;
+  pointer-events: none;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(-10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+@keyframes toastOut { from { opacity: 1; } to { opacity: 0; } }
+
+/* ── Confirm Dialog ── */
+.confirm-overlay {
+  position: fixed; inset: 0; z-index: 250;
+  background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center;
+}
+.confirm-box {
+  background: var(--card); border-radius: var(--radius);
+  padding: 24px; width: calc(100% - 48px); max-width: 320px;
+  text-align: center;
+}
+.confirm-box p { font-size: 15px; margin-bottom: 20px; line-height: 1.5; }
+.confirm-box .btn-row { margin-top: 0; }
+
+/* ── Bottom Tab Nav ── */
+.tab-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  display: flex; background: var(--card);
+  border-top: 1px solid var(--border);
+  padding-bottom: var(--safe-bottom);
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.04);
+}
+.tab-btn {
+  flex: 1; padding: 12px 8px 8px; border: none; background: none;
+  font-size: 13px; color: var(--text-light); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  transition: color 0.2s; font-family: inherit;
+}
+.tab-btn .tab-icon { font-size: 22px; }
+.tab-btn.active { color: var(--coral); font-weight: 600; }
+
+/* ── Analysis Page ── */
+.analysis-page { display: none; padding: 16px 16px 140px; }
+.analysis-page.active { display: block; }
+.analysis-panel {
+  background: var(--card); border-radius: var(--radius);
+  padding: 20px; box-shadow: var(--shadow);
+}
+.analysis-panel h3 { font-size: 17px; margin-bottom: 14px; color: var(--text); }
+.analysis-input {
+  width: 100%; min-height: 160px; border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); padding: 14px; font-size: 14px;
+  font-family: inherit; line-height: 1.7; color: var(--text);
+  background: var(--bg); outline: none; resize: vertical;
+  transition: border-color 0.2s;
+}
+.analysis-input:focus { border-color: var(--coral); }
+.analysis-hint {
+  font-size: 12px; color: var(--text-light); margin-top: 8px;
+  padding: 8px 12px; background: var(--amber-light); border-radius: 8px;
+  line-height: 1.5;
+}
+.analyze-btn {
+  width: 100%; margin-top: 14px; padding: 14px;
+  background: var(--coral); color: white; border: none;
+  border-radius: var(--radius-sm); font-size: 16px; font-weight: 600;
+  cursor: pointer; transition: background 0.2s; font-family: inherit;
+}
+.analyze-btn:active { background: #C04555; }
+
+/* ── Analysis Results (New Template) ── */
+.analysis-result { display: none; margin-top: 16px; }
+.analysis-result.show { display: block; }
+
+.analysis-report {
+  background: var(--card); border-radius: var(--radius);
+  padding: 20px; box-shadow: var(--shadow);
+  font-size: 14px; line-height: 1.75;
+}
+.analysis-report .ar-header {
+  text-align: center; margin-bottom: 20px;
+  padding-bottom: 16px; border-bottom: 2px dashed var(--border);
+}
+.analysis-report .ar-header .ar-icon { font-size: 32px; }
+.analysis-report .ar-header .ar-title {
+  font-size: 18px; font-weight: 700; margin-top: 4px;
+  color: var(--coral);
+}
+.analysis-report .ar-header .ar-sub {
+  font-size: 12px; color: var(--text-light); margin-top: 2px;
+}
+.analysis-report .ar-section {
+  margin-bottom: 20px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.analysis-report .ar-section:last-child { border-bottom: none; margin-bottom: 0; }
+.analysis-report .ar-section-title {
+  font-size: 15px; font-weight: 700; color: var(--text);
+  margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+}
+.analysis-report .ar-section-title .num {
+  background: var(--coral); color: white; font-size: 11px;
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.analysis-report .ar-blockquote {
+  background: var(--bg); border-left: 3px solid var(--coral);
+  padding: 10px 14px; border-radius: 0 8px 8px 0;
+  margin: 8px 0; font-size: 13px; color: var(--text-light);
+  font-style: italic;
+}
+.analysis-report .ar-bullet {
+  padding-left: 12px; margin: 4px 0; font-size: 13px;
+  color: var(--text);
+}
+.analysis-report .ar-highlight {
+  background: var(--amber-light); padding: 2px 6px; border-radius: 4px;
+  font-weight: 600;
+}
+.analysis-report .ar-table {
+  width: 100%; border-collapse: collapse; margin: 10px 0;
+  font-size: 12px;
+}
+.analysis-report .ar-table th {
+  background: var(--bg); padding: 8px 10px; text-align: left;
+  font-weight: 600; color: var(--text-light); font-size: 11px;
+  border-bottom: 2px solid var(--border);
+}
+.analysis-report .ar-table td {
+  padding: 8px 10px; border-bottom: 1px solid var(--border);
+  vertical-align: top; color: var(--text); font-size: 12px;
+}
+.analysis-report .ar-table tr:last-child td { border-bottom: none; }
+.analysis-report .ar-tag-group {
+  display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0;
+}
+.analysis-report .ar-tag {
+  font-size: 11px; padding: 3px 8px; border-radius: 10px;
+  background: var(--bg); color: var(--text-light);
+}
+.analysis-report .ar-tag.comment {
+  font-size: 10px; color: var(--text-light); margin-left: 2px;
+  font-style: italic;
+}
+.analysis-report .ar-star { color: var(--amber); margin-right: 2px; }
+.analysis-report .ar-takeaway {
+  background: linear-gradient(135deg, #FFF3E6, #FDE8EB);
+  border-radius: var(--radius-sm); padding: 14px 16px;
+  margin-top: 12px;
+}
+
+.analysis-actions { display: flex; gap: 10px; margin-top: 14px; }
+.analysis-actions .btn { font-size: 14px; padding: 12px; }
+
+
+/* Hide elements per tab */
+body.tab-inspire .fab { display: flex; }
+body.tab-inspire #list { display: block; }
+body.tab-inspire .cat-chips { display: flex; }
+body.tab-analyze .fab { display: none; }
+body.tab-analyze #list { display: none; }
+body.tab-analyze .cat-chips { display: none; }
+body.tab-analyze .search-bar { display: none; }
+body.tab-analyze .header-stats { display: none; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-top">
+    <div class="header-title">💡 小红书灵感本</div>
+    <div class="header-stats" id="stats">共 0 条灵感</div>
+  </div>
+  <div class="search-bar">
+    <input class="search-input" id="searchInput" placeholder="🔍 搜灵感关键词..." oninput="renderList()">
+    <button class="filter-btn" id="filterBtn" onclick="toggleExportMenu()" title="导出">📤</button>
+  </div>
+</div>
+
+<!-- Category Chips -->
+<div class="cat-chips" id="catChips">
+  <div class="cat-chip active" data-cat="全部" onclick="setCategory('全部', this)">全部</div>
+  <div class="cat-chip" data-cat="八段锦" onclick="setCategory('八段锦', this)">🧘 八段锦</div>
+  <div class="cat-chip" data-cat="产后修复" onclick="setCategory('产后修复', this)">💪 产后修复</div>
+  <div class="cat-chip" data-cat="自我成长" onclick="setCategory('自我成长', this)">🌱 自我成长</div>
+  <div class="cat-chip" data-cat="婚姻经营" onclick="setCategory('婚姻经营', this)">💕 婚姻经营</div>
+  <div class="cat-chip" data-cat="育儿日常" onclick="setCategory('育儿日常', this)">👶 育儿日常</div>
+  <div class="cat-chip" data-cat="其他灵感" onclick="setCategory('其他灵感', this)">✨ 其他</div>
+</div>
+
+<!-- List -->
+<div class="list" id="list"></div>
+
+<!-- FAB -->
+<button class="fab" onclick="openAdd()">+</button>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" id="formModal" style="display:none" onclick="if(event.target===this)closeForm()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="formTitle">✍️ 记录新灵感</h3>
+      <button class="modal-close" onclick="closeForm()">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">📌 标题</label>
+      <input class="form-input" id="inpTitle" placeholder="例如：八段锦开头可以这样…" maxlength="60">
+    </div>
+    <div class="form-group">
+      <label class="form-label">📂 分类</label>
+      <div class="cat-select" id="catSelect"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">📝 笔记</label>
+      <textarea class="form-textarea" id="inpNotes" placeholder="把灵感细节写下来…比如看到的爆款结构、金句、拍摄角度…"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">🏷️ 标签（用逗号分隔）</label>
+      <input class="form-input" id="inpTags" placeholder="例如：熬夜,补气血,新手友好">
+    </div>
+    <div class="form-group">
+      <label class="form-label">🔗 参考链接（选填）</label>
+      <input class="form-input" id="inpSource" placeholder="小红书链接或其他参考">
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-outline" id="btnDelete" style="display:none" onclick="deleteCurrent()">🗑 删除</button>
+      <button class="btn btn-primary" onclick="saveInspiration()">💾 保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="detailModal" style="display:none" onclick="if(event.target===this)closeDetail()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>📋 灵感详情</h3>
+      <button class="modal-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="detail-content" id="detailContent"></div>
+    <div class="detail-actions" id="detailActions"></div>
+  </div>
+</div>
+
+<!-- Confirm Dialog -->
+<div class="confirm-overlay" id="confirmDialog" style="display:none">
+  <div class="confirm-box">
+    <p id="confirmMsg">确定要删除吗？</p>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="closeConfirm()">取消</button>
+      <button class="btn btn-primary" id="confirmBtn" style="background:#E53935">删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" style="display:none"></div>
+
+<!-- ═══════ ANALYSIS PAGE ═══════ -->
+<div class="analysis-page active" id="analysisPage" style="display:none">
+  <div class="analysis-panel">
+    <h3>🔬 爆款文案分析</h3>
+    <textarea class="analysis-input" id="analysisInput" placeholder="把对标账号的爆款文案粘贴到这里...
+    
+例如：
+当了妈妈第一年，整整少睡600个小时。整夜零碎熬夜，整日疲惫没精气神。
+每天十分钟宝妈专属八段锦，慢慢调理气息，舒缓熬夜积攒的疲惫。
+坚持练习，带娃隔天也元气满满。
+💬 熬夜带娃容易疲惫乏力的宝妈扣1
+#产后养生 #宝妈八段锦 #产后运动"></textarea>
+    <div class="analysis-hint">💡 粘贴完整文案（含标题+正文+互动+标签），分析更准确哦</div>
+    <button class="analyze-btn" onclick="runAnalysis()">🔍 开始分析</button>
+  </div>
+  <div class="analysis-result" id="analysisResult"></div>
+</div>
+
+<!-- ═══════ BOTTOM TAB NAV ═══════ -->
+<div class="tab-nav">
+  <button class="tab-btn active" id="tabInspire" onclick="switchTab('inspire')">
+    <span class="tab-icon">💡</span>灵感记录
+  </button>
+  <button class="tab-btn" id="tabAnalyze" onclick="switchTab('analyze')">
+    <span class="tab-icon">🔬</span>爆款分析
+  </button>
+</div>
+
+<script>
+// ═══════ STATE ═══════
+let currentCategory = '全部';
+let editId = null;
+let pendingDeleteId = null;
+let confirmCallback = null;
+let _dataCache = null;
+
+function loadAll() {
+  if (_dataCache !== null) return _dataCache;
+  try {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/data', false);
+    xhr.send();
+    if (xhr.status === 200) { _dataCache = JSON.parse(xhr.responseText); return _dataCache; }
+  } catch(e) {}
+  try { _dataCache = JSON.parse(localStorage.getItem('xhs_inspirations') || '[]'); } catch(e) { _dataCache = []; }
+  return _dataCache;
+}
+
+function saveAll(data) {
+  _dataCache = data;
+  try {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/data', false);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(data));
+  } catch(e) { localStorage.setItem('xhs_inspirations', JSON.stringify(data)); }
+}
+
+// ═══════ RENDER ═══════
+function renderCatChips() {
+  const chips = document.querySelectorAll('#catChips .cat-chip');
+  chips.forEach(c => {
+    c.classList.toggle('active', c.dataset.cat === currentCategory);
+  });
+}
+
+function setCategory(cat, el) {
+  currentCategory = cat;
+  renderCatChips();
+  renderList();
+}
+
+function renderList() {
+  const all = loadAll();
+  const query = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+
+  let filtered = all;
+  if (currentCategory !== '全部') filtered = filtered.filter(i => i.category === currentCategory);
+  if (query) {
+    filtered = filtered.filter(i =>
+      (i.title || '').toLowerCase().includes(query) ||
+      (i.notes || '').toLowerCase().includes(query) ||
+      (i.tags || '').toLowerCase().includes(query)
+    );
+  }
+
+  // Sort by time (newest first)
+  filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+  document.getElementById('stats').textContent = `共 ${all.length} 条灵感`;
+
+  const listEl = document.getElementById('list');
+  if (filtered.length === 0) {
+    const msg = currentCategory === '全部' && !query
+      ? '还没有灵感记录 📝\n点击右下角 + 开始记录吧！'
+      : '没有匹配的灵感 🤔';
+    listEl.innerHTML = `<div class="empty-state"><div class="icon">${currentCategory === '全部' && !query ? '💭' : '🔍'}</div><p>${msg.replace(/\n/g, '<br>')}</p></div>`;
+    return;
+  }
+
+  listEl.innerHTML = filtered.map((item, idx) => {
+    const catClass = 'cat-' + (item.category || '其他灵感');
+    const ts = item.createdAt ? new Date(item.createdAt) : null;
+    const timeStr = ts ? `${ts.getMonth()+1}/${ts.getDate()} ${ts.getHours().toString().padStart(2,'0')}:${ts.getMinutes().toString().padStart(2,'0')}` : '';
+    const tags = (item.tags || '').split(/[,，]/).filter(t => t.trim());
+    return `
+      <div class="card" onclick="openDetail('${item.id}')">
+        <div class="card-top">
+          <div class="card-title">${escHtml(item.title || '未命名灵感')}</div>
+          <div class="card-cat ${catClass}">${item.category || '未分类'}</div>
+        </div>
+        ${item.notes ? `<div class="card-preview">${escHtml(item.notes)}</div>` : ''}
+        <div class="card-footer">
+          ${tags.length ? '<div class="tags">' + tags.map(t => `<span class="tag">#${escHtml(t.trim())}</span>`).join('') + '</div>' : ''}
+          <span class="card-time">${timeStr}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+// ═══════ FORM ═══════
+function openAdd() {
+  editId = null;
+  document.getElementById('formTitle').textContent = '✍️ 记录新灵感';
+  document.getElementById('inpTitle').value = '';
+  document.getElementById('inpNotes').value = '';
+  document.getElementById('inpTags').value = '';
+  document.getElementById('inpSource').value = '';
+  document.getElementById('btnDelete').style.display = 'none';
+  buildCatSelect(null);
+  document.getElementById('formModal').style.display = 'flex';
+  document.getElementById('inpTitle').focus();
+}
+
+function openEdit(id) {
+  const all = loadAll();
+  const item = all.find(i => i.id === id);
+  if (!item) return;
+  editId = id;
+  document.getElementById('formTitle').textContent = '✏️ 编辑灵感';
+  document.getElementById('inpTitle').value = item.title || '';
+  document.getElementById('inpNotes').value = item.notes || '';
+  document.getElementById('inpTags').value = item.tags || '';
+  document.getElementById('inpSource').value = item.source || '';
+  document.getElementById('btnDelete').style.display = '';
+  buildCatSelect(item.category);
+  document.getElementById('formModal').style.display = 'flex';
+}
+
+function buildCatSelect(selected) {
+  const cats = ['八段锦', '产后修复', '自我成长', '婚姻经营', '育儿日常', '其他灵感'];
+  const sel = selected || '其他灵感';
+  document.getElementById('catSelect').innerHTML = cats.map(c =>
+    `<div class="cat-option ${c === sel ? 'selected' : ''}" data-cat="${c}" onclick="selectCat('${c}', this)">${c}</div>`
+  ).join('');
+  document.getElementById('catSelect').dataset.value = sel;
+}
+
+function selectCat(cat, el) {
+  document.querySelectorAll('#catSelect .cat-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('catSelect').dataset.value = cat;
+}
+
+function closeForm() {
+  document.getElementById('formModal').style.display = 'none';
+  editId = null;
+}
+
+function saveInspiration() {
+  const all = loadAll();
+  const title = document.getElementById('inpTitle').value.trim();
+  const category = document.getElementById('catSelect').dataset.value || '其他灵感';
+  const notes = document.getElementById('inpNotes').value.trim();
+  const tags = document.getElementById('inpTags').value.trim();
+  const source = document.getElementById('inpSource').value.trim();
+
+  if (!title) { showToast('⚠️ 至少写个标题吧～'); return; }
+
+  if (editId) {
+    const idx = all.findIndex(i => i.id === editId);
+    if (idx >= 0) {
+      all[idx].title = title;
+      all[idx].category = category;
+      all[idx].notes = notes;
+      all[idx].tags = tags;
+      all[idx].source = source;
+      all[idx].updatedAt = Date.now();
+    }
+  } else {
+    all.push({
+      id: 'i_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+      title, category, notes, tags, source,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    });
+  }
+
+  saveAll(all);
+  closeForm();
+  renderList();
+  showToast(editId ? '✅ 已更新！' : '✅ 灵感已保存！');
+}
+
+function deleteCurrent() {
+  if (!editId) return;
+  pendingDeleteId = editId;
+  document.getElementById('confirmMsg').textContent = '确定要删除这条灵感吗？此操作不可恢复。';
+  confirmCallback = () => {
+    let all = loadAll();
+    all = all.filter(i => i.id !== pendingDeleteId);
+    saveAll(all);
+    closeForm();
+    renderList();
+    showToast('🗑 已删除');
+    pendingDeleteId = null;
+  };
+  document.getElementById('confirmDialog').style.display = 'flex';
+}
+
+// ═══════ DETAIL ═══════
+function openDetail(id) {
+  const all = loadAll();
+  const item = all.find(i => i.id === id);
+  if (!item) return;
+
+  const ts = new Date(item.createdAt);
+  const timeStr = `${ts.getFullYear()}/${(ts.getMonth()+1).toString().padStart(2,'0')}/${ts.getDate().toString().padStart(2,'0')} ${ts.getHours().toString().padStart(2,'0')}:${ts.getMinutes().toString().padStart(2,'0')}`;
+  const catClass = 'cat-' + (item.category || '其他灵感');
+  const tags = (item.tags || '').split(/[,，]/).filter(t => t.trim());
+
+  document.getElementById('detailContent').innerHTML = `
+    <h2>${escHtml(item.title)}</h2>
+    <span class="card-cat detail-cat ${catClass}">${item.category || '未分类'}</span>
+    ${item.notes ? `<div class="detail-body">${escHtml(item.notes)}</div>` : '<div class="detail-body" style="color:#aaa">暂无笔记内容</div>'}
+    ${item.source ? `<div class="detail-source">🔗 <a href="${escHtml(item.source)}" target="_blank">${escHtml(item.source)}</a></div>` : ''}
+    ${tags.length ? `<div class="detail-tags">${tags.map(t => `<span class="detail-tag">#${escHtml(t.trim())}</span>`).join('')}</div>` : ''}
+    <div style="font-size:12px;color:var(--text-light);margin-top:12px">📅 创建于 ${timeStr}</div>
+  `;
+
+  document.getElementById('detailActions').innerHTML = `
+    <button class="btn btn-outline" onclick="copyItem('${item.id}')">📋 复制</button>
+    <button class="btn btn-outline" onclick="closeDetail();openEdit('${item.id}')">✏️ 编辑</button>
+    <button class="btn btn-outline" style="color:#E53935;border-color:#E53935" onclick="deleteFromDetail('${item.id}')">🗑 删除</button>
+  `;
+
+  document.getElementById('detailModal').style.display = 'flex';
+}
+
+function closeDetail() {
+  document.getElementById('detailModal').style.display = 'none';
+}
+
+function copyItem(id) {
+  const all = loadAll();
+  const item = all.find(i => i.id === id);
+  if (!item) return;
+  let text = `📌 ${item.title}\n📂 ${item.category}`;
+  if (item.notes) text += `\n📝 ${item.notes}`;
+  if (item.tags) text += `\n🏷️ ${item.tags}`;
+  if (item.source) text += `\n🔗 ${item.source}`;
+  navigator.clipboard.writeText(text).then(() => showToast('📋 已复制到剪贴板！'));
+}
+
+function deleteFromDetail(id) {
+  pendingDeleteId = id;
+  document.getElementById('confirmMsg').textContent = '确定要删除这条灵感吗？';
+  confirmCallback = () => {
+    let all = loadAll();
+    all = all.filter(i => i.id !== pendingDeleteId);
+    saveAll(all);
+    closeDetail();
+    renderList();
+    showToast('🗑 已删除');
+    pendingDeleteId = null;
+  };
+  document.getElementById('confirmDialog').style.display = 'flex';
+}
+
+// ═══════ CONFIRM ═══════
+function closeConfirm() {
+  document.getElementById('confirmDialog').style.display = 'none';
+  confirmCallback = null;
+  pendingDeleteId = null;
+}
+document.getElementById('confirmBtn').addEventListener('click', () => {
+  if (confirmCallback) confirmCallback();
+  closeConfirm();
+});
+
+// ═══════ EXPORT ═══════
+function toggleExportMenu() {
+  const all = loadAll();
+  if (all.length === 0) { showToast('还没有灵感可以导出哦～'); return; }
+
+  // Simple export as text file
+  let text = '💡 小红书灵感记录\n' + '='.repeat(30) + '\n\n';
+  all.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  all.forEach(item => {
+    const ts = new Date(item.createdAt);
+    text += `📌 ${item.title}\n`;
+    text += `📂 ${item.category}  📅 ${ts.toLocaleDateString('zh-CN')}\n`;
+    if (item.notes) text += `📝 ${item.notes}\n`;
+    if (item.tags) text += `🏷️ ${item.tags}\n`;
+    if (item.source) text += `🔗 ${item.source}\n`;
+    text += '-'.repeat(20) + '\n';
+  });
+
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '小红书灵感记录_' + new Date().toISOString().slice(0,10) + '.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📤 已导出！');
+}
+
+// ═══════ TOAST ═══════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  // Reset animation
+  t.style.animation = 'none';
+  t.offsetHeight;
+  t.style.animation = 'toastIn 0.3s, toastOut 0.3s 1.7s forwards';
+  setTimeout(() => { t.style.display = 'none'; }, 2100);
+}
+
+// ═══════ TAB SWITCHING ═══════
+function switchTab(tab) {
+  const inspireBtn = document.getElementById('tabInspire');
+  const analyzeBtn = document.getElementById('tabAnalyze');
+  const listEl = document.getElementById('list');
+  const catChips = document.getElementById('catChips');
+  const searchBar = document.querySelector('.search-bar');
+  const statsEl = document.getElementById('header-stats') || document.querySelector('.header-stats');
+  const fab = document.querySelector('.fab');
+  const analysisPage = document.getElementById('analysisPage');
+  const headerStats = document.querySelector('.header-stats');
+
+  if (tab === 'inspire') {
+    inspireBtn.classList.add('active');
+    analyzeBtn.classList.remove('active');
+    document.body.className = 'tab-inspire';
+    listEl.style.display = 'block';
+    catChips.style.display = 'flex';
+    if (searchBar) searchBar.style.display = 'flex';
+    if (headerStats) headerStats.style.display = '';
+    if (fab) fab.style.display = 'flex';
+    analysisPage.style.display = 'none';
+  } else {
+    analyzeBtn.classList.add('active');
+    inspireBtn.classList.remove('active');
+    document.body.className = 'tab-analyze';
+    listEl.style.display = 'none';
+    catChips.style.display = 'none';
+    if (searchBar) searchBar.style.display = 'none';
+    if (headerStats) headerStats.style.display = 'none';
+    if (fab) fab.style.display = 'none';
+    analysisPage.style.display = 'block';
+  }
+}
+
+// ═══════ INIT ═══════
+window.addEventListener('DOMContentLoaded', function() {
+  renderList();
+  renderCatChips();
+});
+
+// ═══════ ANALYSIS ENGINE (NEW TEMPLATE) ═══════
+function runAnalysis() {
+  var text = document.getElementById('analysisInput').value.trim();
+  if (!text) { showToast('需要先粘贴文案'); return; }
+  var lines = text.split('\n').filter(function(l) { return l.trim(); });
+  var result = {
+    account: detectAccount(text),
+    hook: detectHookNew(text, lines),
+    structure: detectStructureNew(text, lines),
+    softAd: detectSoftAd(text, lines),
+    interaction: detectInteractionNew(text, lines),
+    tags: extractTagsNew(text),
+    stats: getTextStatsNew(text),
+    takeaways: generateTakeaways(text, lines)
+  };
+  renderAnalysisNew(result);
+}
+
+function detectAccount(text) {
+  var m = text.match(/^@?(.{2,20}?)(?:\s|:|：|的|·|-)/);
+  if (m && !/^[#\d]/.test(m[1])) return m[1].trim();
+  return '';
+}
+
+function detectHookNew(text, lines) {
+  // Skip account name if first line is short (likely account name)
+  var firstLine = lines[0] || '';
+  if (firstLine.length < 12 && lines.length > 1 && !/[？！。，]/.test(firstLine)) {
+    firstLine = lines[1] || firstLine;
+  }
+  // Also try to find title line
+  var titleLine = firstLine;
+  for (var i = 0; i < Math.min(lines.length, 5); i++) {
+    if (/标题[：:]/.test(lines[i])) {
+      titleLine = lines[i]; break;
+    }
+  }
+  if (titleLine !== firstLine) firstLine = titleLine;
+  var firstThree = lines.slice(0, 3).join(' ');
+  var result = { type: '', desc: '', bullets: [], example: '' };
+  var titleMatch = text.match(/标题[：:]\s*(.+)/);
+  result.example = titleMatch ? titleMatch[1] : (firstLine.length > 60 ? firstLine.slice(0, 60) + '...' : firstLine);
+  var painWords = ['累', '胖', '焦虑', '崩溃', '睡不着', '抑郁', '腰疼', '丑', '老', '熬夜', '疲惫', '憔悴', '没精神', '没力气', '脱发', '松', '垮', '绝望', '哭', '后悔'];
+  var identityWords = ['妈妈', '宝妈', '当妈', '产后', '35岁', '30岁', '二胎', '新手妈妈', '全职妈妈'];
+  var attitudeWords = ['不再', '不想', '我要', '必须', '决定', '开始', '终于'];
+  var hasPain = painWords.some(function(w) { return firstLine.indexOf(w) >= 0; });
+  var hasIdentity = identityWords.some(function(w) { return firstLine.indexOf(w) >= 0; });
+  var hasAttitude = attitudeWords.some(function(w) { return firstLine.indexOf(w) >= 0; });
+  if (hasIdentity && (hasPain || hasAttitude)) {
+    result.type = '痛点共鸣 + 身份锚定';
+    result.desc = '用身份标签精准锁定目标人群，搭配痛点或态度引发共鸣';
+    identityWords.filter(function(w) { return firstLine.indexOf(w) >= 0; }).forEach(function(w) {
+      result.bullets.push('「' + w + '」→ 具体身份锚点，精准击中目标人群');
+    });
+    if (hasPain) {
+      var found = painWords.filter(function(w) { return firstLine.indexOf(w) >= 0; });
+      if (found.length) result.bullets.push('「' + found.slice(0,2).join('」「') + '」→ 痛点词唤醒情绪');
+    }
+    if (hasAttitude) {
+      var found2 = attitudeWords.filter(function(w) { return firstLine.indexOf(w) >= 0; });
+      if (found2.length) result.bullets.push('「' + found2[0] + '…」→ 态度鲜明，一句话引发站队');
+    }
+    return result;
+  }
+  if (hasPain) {
+    result.type = '痛点直击型';
+    result.desc = '开头直接戳痛点，让目标用户一秒共情';
+    var found3 = painWords.filter(function(w) { return firstLine.indexOf(w) >= 0; });
+    result.bullets = found3.slice(0,3).map(function(w) { return '关键词「' + w + '」精准触发目标情绪'; });
+    return result;
+  }
+  if (/\d+/.test(firstLine) && firstLine.length < 50) {
+    var nums = firstLine.match(/\d+/g) || [];
+    result.type = '数字冲击型';
+    result.desc = '用具体数字制造冲击感，适合教程/干货类';
+    result.bullets = nums.slice(0,3).map(function(n) { return '「' + n + '」→ 数字增加可信度和冲击力'; });
+    return result;
+  }
+  if (/[？?]/.test(firstThree) || /为什么|怎么|秘密|居然|原来|竟然|才知道/.test(firstLine)) {
+    result.type = '悬念好奇型';
+    result.desc = '制造悬念，让用户忍不住想看下去';
+    result.bullets = ['用疑问或揭秘感引发好奇心'];
+    return result;
+  }
+  if (/以前|曾经|别.*要|不是.*而是|❌|✅/.test(firstLine)) {
+    result.type = '对比反差型';
+    result.desc = '制造反差，突出方法的效果';
+    result.bullets = ['前后对比 / 对错对比，增强说服力'];
+    return result;
+  }
+  if (/你也|是不是|有没有|我们|每个|所有/.test(firstLine)) {
+    result.type = '共鸣引入型';
+    result.desc = '拉近关系，让用户觉得"说的就是我"';
+    result.bullets = ['用共同身份或经历引发归属感'];
+    return result;
+  }
+  result.type = '陈述直给型';
+  result.desc = '直接陈述观点或方法，适合干货/教程';
+  result.bullets = ['建议加上痛点词或身份标签，钩子会更锋利'];
+  return result;
+}
+
+function detectStructureNew(text, lines) {
+  var hasPain = /累|胖|焦虑|崩溃|熬夜|疲惫|抑郁|丑|疼|后悔|绝望|舍不得|消耗|撑着/.test(text);
+  var hasAmplify = /镜子|看着|越来越|每天|一年|好几年|只有|只剩|除了|不是.*而是/.test(text);
+  var hasMethod = /方法|步骤|动作|练习|做|每天|坚持|开始|学会|试试|教你|清晨|早起|一节|一顿/.test(text);
+  var hasSublime = /真正|最好的|爱自己|生活|不再|终于|学会|变成|值得|温柔/.test(text);
+  var structure = { type: '', desc: '', stages: [], formula: '' };
+  var stageCount = [hasPain, hasAmplify, hasMethod, hasSublime].filter(Boolean).length;
+  if (stageCount >= 3) {
+    structure.type = '痛 → 懂 → 解 → 升华（标准爆款四段式）';
+    structure.desc = '小红书爆款的经典公式：先唤醒痛点、再放大情绪、然后给出解法、最后金句升华收尾';
+    structure.formula = '痛 → 懂 → 解 → 升华';
+    if (hasPain) structure.stages.push({ stage: '① 唤醒共鸣', role: '痛点唤醒', text: '用一句话击中用户正在经历的痛苦' });
+    if (hasAmplify) structure.stages.push({ stage: '② 情绪放大', role: '强化痛点', text: '用细节描写放大感受，让用户"对，这就是我"' });
+    if (hasMethod) structure.stages.push({ stage: '③ 给出解法', role: '转折破局', text: '给出具体的行动/方法，让用户看到希望' });
+    if (hasSublime) structure.stages.push({ stage: '④ 金句升华', role: '情感收尾', text: '用一句可以截图传播的话收尾，提升格调' });
+    return structure;
+  }
+  if (/我|我的|自己|当时|那年|曾经|生完|产后/.test(text) && /后来|现在|终于|坚持|改变|恢复/.test(text)) {
+    structure.type = '故事叙事型';
+    structure.desc = '个人经历开头，自然过渡到干货分享，真实感强';
+    structure.formula = '故事 → 感悟 → 干货';
+    structure.stages = [
+      { stage: '① 故事开头', role: '建立信任', text: '用个人经历拉近距离' },
+      { stage: '② 感悟转折', role: '引发共鸣', text: '从故事中提炼出普遍性的感悟' },
+      { stage: '③ 干货输出', role: '提供价值', text: '给出可操作的方法或建议' }
+    ];
+    return structure;
+  }
+  if (hasPain && hasMethod) {
+    structure.type = '痛点 → 解法型';
+    structure.desc = '先共鸣后给方案，简洁有效';
+    structure.formula = '痛 → 解';
+    structure.stages = [
+      { stage: '① 痛点引入', role: '唤醒共鸣', text: '一句话戳痛点' },
+      { stage: '② 方法输出', role: '提供解法', text: '给出具体方法' }
+    ];
+    return structure;
+  }
+  if (/第[一二三123]|[①②③④⑤]|\d\s*[.、]|步骤|第一步|首先/.test(text)) {
+    structure.type = '教程清单型';
+    structure.desc = '分步骤讲解，清晰易读，实用性强';
+    structure.formula = '清单式输出';
+    structure.stages = [
+      { stage: '① 背景引入', role: '说明价值', text: '为什么需要学这个' },
+      { stage: '② 分步教程', role: '干货输出', text: '清晰的分步骤讲解' },
+      { stage: '③ 效果提醒', role: '收尾', text: '注意事项或预期效果' }
+    ];
+    return structure;
+  }
+  structure.type = '自由型';
+  structure.desc = '结构较松散，建议套用「痛→懂→解→升华」四段式模板';
+  structure.formula = '建议改为：痛 → 懂 → 解 → 升华';
+  return structure;
+}
+
+function detectSoftAd(text, lines) {
+  var result = { hasAd: false, techniques: [] };
+  var hasProduct = /奶粉|粉|补剂|产品|课程|训练|私教|装备|工具|推荐/.test(text);
+  var hasTrial = /粉质|味道|口感|奶香|一冲就化|质地|效果|用完|喝完|吃完|试了/.test(text);
+  var hasRitual = (/仪式|习惯/.test(text)) && (/一杯|一节|一顿|一次/.test(text));
+  if (!hasProduct) return result;
+  result.hasAd = true;
+  if (/先|然后|也|顺便|同时|还会/.test(text)) {
+    result.techniques.push('✅ 产品是故事道具而非主角：产品是"爱自己"故事里的一个自然环节，服务于情感');
+  } else if (hasProduct) {
+    result.techniques.push('✅ 产品融入叙事：产品出现在个人体验中，而非独立介绍');
+  }
+  if (hasTrial) result.techniques.push('✅ 体感细节替代硬广词：用了体感描述，像朋友分享体验，不像卖货');
+  if (hasRitual) result.techniques.push('✅ 产品变成仪式：把使用变成一个"爱自己的仪式"，这才是最高级的种草');
+  if (/快买|赶紧|限时|错过|囤货|必买/.test(text)) result.techniques.push('⚠️ 有硬广倾向：建议改为朋友分享式的体感描述');
+  if (!result.techniques.length && hasProduct) {
+    result.techniques.push('⚠️ 有产品提及但植入较直接，建议用体感细节代替功能词');
+  }
+  return result;
+}
+
+function detectInteractionNew(text, lines) {
+  var result = { type: '', desc: '', bullets: [] };
+  var hasCTA = /扣[1一]|点赞|收藏|关注|留言|评论|讨论/.test(text);
+  var hasWe = /我们|大家|你们|你/.test(text);
+  var hasOpening = /你也|是不是|有没有/.test(lines[0] || '');
+  var hasEndQuestion = lines.length > 0 && /[？?]/.test(lines[lines.length - 1] || '');
+  if (hasCTA) {
+    result.type = '✅ 有明确互动引导';
+    result.desc = '结尾有明确的引导用户评论/互动的设计';
+    if (/扣[1一]/.test(text)) result.bullets.push('「扣1」式互动门槛最低，适合起号阶段');
+    if (hasOpening) result.bullets.push('开头就是互动钩子，让用户一秒对号入座');
+    if (hasWe) result.bullets.push('全文用「我们」「你」拉近距离');
+    if (!result.bullets.length) result.bullets.push('有明确 CTA，用户行动路径清晰');
+    return result;
+  }
+  if (hasEndQuestion) {
+    result.type = '⚠️ 有提问但不够明确';
+    result.desc = '结尾有问句，但没有明确引导行动';
+    result.bullets.push('试试改成「评论区扣1」或「说说你的经历」');
+    return result;
+  }
+  if (hasWe && !hasCTA) {
+    result.type = '⚠️ 有共鸣但缺互动引导';
+    result.desc = '文案有代入感，但结尾没有让用户行动的设计';
+    result.bullets.push('加一句明确的互动引导效果会更好');
+    return result;
+  }
+  result.type = '❌ 缺少互动引导';
+  result.desc = '结尾没有明确让用户评论/互动的设计';
+  result.bullets.push('结尾一定要加互动，比如「熬夜宝妈扣1」');
+  return result;
+}
+
+function extractTagsNew(text) {
+  var tagRegex = /#[一-鿿\w]+/g;
+  var tags = text.match(tagRegex) || [];
+  var brandTags = [], contentTypeTags = [], bigTags = [], midTags = [], smallTags = [];
+  var bigSet = ['产后修复', '产后恢复', '宝妈', '育儿', '减肥', '瘦身', '运动', '养生', '健康', '是妈妈也是自己', '当我真正开始爱自己', '当妈妈是一场修行'];
+  var smallSet = ['熬夜宝妈', '母乳喂养', '产后变美', '产后补气血', '宝妈日记', '产后焦虑', '产后运动', '宝妈爱自己', '当妈的才懂'];
+  tags.forEach(function(t) {
+    var name = t.replace('#', '');
+    if (/奶粉|品牌|贝特恩|蓝一号/.test(name)) brandTags.push(t);
+    else if (/Vlog|vlog|VLOG/.test(name)) contentTypeTags.push(t);
+    else if (bigSet.indexOf(name) >= 0) bigTags.push(t);
+    else if (smallSet.indexOf(name) >= 0) smallTags.push(t);
+    else midTags.push(t);
+  });
+  var strategy = '';
+  if (brandTags.length > 0 && (bigTags.length + midTags.length + smallTags.length > 0))
+    strategy = '品牌词 + 情感共鸣标签组合。情感标签负责拉流量，品牌词负责转化。';
+  else if (bigTags.length + midTags.length + smallTags.length > 0)
+    strategy = '纯情感共鸣标签。大标签带流量、小标签更精准，数量 5-8 个合适。';
+  else if (tags.length === 0)
+    strategy = '标签偏少，建议：大标签带流量 + 小标签精准匹配';
+  else
+    strategy = '标签数量合适，注意大标签+小标签搭配';
+  return { tags: tags, brandTags: brandTags, contentTypeTags: contentTypeTags, bigTags: bigTags, midTags: midTags, smallTags: smallTags, strategy: strategy };
+}
+
+function getTextStatsNew(text) {
+  var chars = text.replace(/\s/g, '').length;
+  var lines = text.split('\n').filter(function(l) { return l.trim(); }).length;
+  return { chars: chars, lines: lines };
+}
+
+function generateTakeaways(text, lines) {
+  var takeaways = [];
+  if (/妈妈|宝妈|当妈|产后/.test(lines[0] || '')) {
+    takeaways.push({ dim: '钩子', point: '用一个具体身份+痛点场景唤醒共鸣，不用大道理开头' });
+  } else {
+    takeaways.push({ dim: '钩子', point: '开篇用痛点或数字抓住注意力，前3秒决定完播率' });
+  }
+  if (/方法|步骤|动作|练习|做|每天|坚持/.test(text) && /累|胖|焦虑/.test(text)) {
+    takeaways.push({ dim: '结构', point: '痛→懂→解→升华，四步公式可直接套用' });
+  } else {
+    takeaways.push({ dim: '结构', point: '套用「痛点→方法→结果」三段式，完播率更高' });
+  }
+  if (/奶粉|粉|产品|推荐/.test(text)) {
+    takeaways.push({ dim: '软广', point: '把产品藏在"爱自己的具体行动"里，不硬推' });
+  }
+  takeaways.push({ dim: '金句', point: '每篇至少准备1句可以截图传播的金句' });
+  if (/#/.test(text)) {
+    takeaways.push({ dim: '标签', point: '情感标签带流量，品牌词完成种草' });
+  } else {
+    takeaways.push({ dim: '标签', point: '加上 5-7 个话题标签，大小标签搭配' });
+  }
+  return takeaways;
+}
+
+function renderAnalysisNew(result) {
+  var el = document.getElementById('analysisResult');
+  var html = '<div class="analysis-report">';
+  html += '<div class="ar-header"><div class="ar-icon">🔥</div>';
+  html += '<div class="ar-title">爆款分析' + (result.account ? '：' + result.account : '') + '</div>';
+  html += '<div class="ar-sub">' + result.stats.chars + '字 · ' + result.stats.lines + '行</div></div>';
+
+  html += '<div class="ar-section">';
+  html += '<div class="ar-section-title"><span class="num">一</span>钩子类型：<span class="ar-highlight">' + escHtml(result.hook.type) + '</span></div>';
+  if (result.hook.example) html += '<div class="ar-blockquote">' + escHtml(result.hook.example) + '</div>';
+  html += '<p class="ar-desc">' + escHtml(result.hook.desc) + '</p>';
+  result.hook.bullets.forEach(function(b) { html += '<div class="ar-bullet">' + escHtml(b) + '</div>'; });
+  html += '</div>';
+
+  html += '<div class="ar-section">';
+  html += '<div class="ar-section-title"><span class="num">二</span>文案结构：<span class="ar-highlight">' + escHtml(result.structure.type) + '</span></div>';
+  html += '<p class="ar-desc">' + escHtml(result.structure.desc) + '</p>';
+  if (result.structure.stages.length > 0) {
+    html += '<table class="ar-table"><thead><tr><th>段落</th><th>作用</th><th>内容</th></tr></thead><tbody>';
+    result.structure.stages.forEach(function(s) {
+      html += '<tr><td>' + escHtml(s.stage) + '</td><td><b>' + escHtml(s.role) + '</b></td><td>' + escHtml(s.text) + '</td></tr>';
+    });
+    html += '</tbody></table>';
+  }
+  if (result.structure.formula) {
+    html += '<div class="ar-formula">📐 公式：' + escHtml(result.structure.formula) + '</div>';
+  }
+  html += '</div>';
+
+  html += '<div class="ar-section">';
+  html += '<div class="ar-section-title"><span class="num">三</span>软广植入技巧 <span style="color:var(--amber);font-size:13px">⭐</span></div>';
+  if (result.softAd.techniques.length > 0) {
+    result.softAd.techniques.forEach(function(t) {
+      html += '<div class="ar-bullet ar-wide">' + t + '</div>';
+    });
+  } else {
+    html += '<p class="ar-desc">未检测到商业植入内容</p>';
+  }
+  html += '</div>';
+
+  html += '<div class="ar-section">';
+  html += '<div class="ar-section-title"><span class="num">四</span>互动设计：' + escHtml(result.interaction.type) + '</div>';
+  html += '<p class="ar-desc">' + escHtml(result.interaction.desc) + '</p>';
+  result.interaction.bullets.forEach(function(b) { html += '<div class="ar-bullet">' + escHtml(b) + '</div>'; });
+  html += '</div>';
+
+  html += '<div class="ar-section">';
+  html += '<div class="ar-section-title"><span class="num">五</span>标签策略</div>';
+  if (result.tags.tags.length > 0) {
+    html += '<div class="ar-tag-group">';
+    var blocks = [];
+    if (result.tags.brandTags.length) blocks.push({ label: '品牌词', tags: result.tags.brandTags });
+    if (result.tags.contentTypeTags.length) blocks.push({ label: '内容类型', tags: result.tags.contentTypeTags });
+    if (result.tags.bigTags.length) blocks.push({ label: '大标签(流量)', tags: result.tags.bigTags });
+    if (result.tags.midTags.length) blocks.push({ label: '中标签', tags: result.tags.midTags });
+    if (result.tags.smallTags.length) blocks.push({ label: '小标签(精准)', tags: result.tags.smallTags });
+    blocks.forEach(function(bk) {
+      bk.tags.forEach(function(t) { html += '<span class="ar-tag">' + escHtml(t) + '</span>'; });
+      html += '<span class="ar-tag comment">← ' + bk.label + '</span>';
+    });
+    html += '</div>';
+  } else {
+    html += '<p class="ar-desc">（无标签）</p>';
+  }
+  if (result.tags.strategy) {
+    html += '<div class="ar-strategy">💡 <b>策略：</b>' + escHtml(result.tags.strategy) + '</div>';
+  }
+  html += '</div>';
+
+  html += '<div class="ar-section">';
+  html += '<div class="ar-section-title"><span class="num">六</span>💡 你可以抄什么？</div>';
+  html += '<table class="ar-table"><thead><tr><th style="width:60px">维度</th><th>可借鉴点</th></tr></thead><tbody>';
+  result.takeaways.forEach(function(t) {
+    html += '<tr><td><b>' + escHtml(t.dim) + '</b></td><td>' + escHtml(t.point) + '</td></tr>';
+  });
+  html += '</tbody></table>';
+  html += '</div>';
+  html += '</div>'; // .analysis-report
+
+  html += '<div class="analysis-actions">';
+  html += '<button class="btn btn-outline" onclick="copyAnalysisNew()">📋 复制分析</button>';
+  html += '<button class="btn btn-primary" onclick="saveAnalysisAsInspiration()">💾 存为灵感</button>';
+  html += '</div>';
+
+  el.innerHTML = html;
+  el.classList.add('show');
+}
+
+function copyAnalysisNew() {
+  var report = document.querySelector('.analysis-report');
+  if (!report) return;
+  navigator.clipboard.writeText(report.innerText).then(function() { showToast('📋 分析已复制到剪贴板！'); });
+}
+
+function saveAnalysisAsInspiration() {
+  var all = loadAll();
+  var el = document.getElementById('analysisInput');
+  var text = el.value.trim();
+  if (!text) { showToast('⚠️ 没有内容可保存'); return; }
+  var title = text.split('\n')[0].slice(0, 40) || '爆款文案分析';
+  var report = document.querySelector('.analysis-report');
+  var analysisText = report ? '\n\n---\n分析结果：\n' + report.innerText : '';
+  all.push({
+    id: 'i_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+    title: '🔬 ' + title,
+    category: '其他灵感',
+    notes: '原文：\n' + text + analysisText,
+    tags: '爆款分析,拆解',
+    source: '',
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  });
+  saveAll(all);
+  renderList();
+  showToast('✅ 灵感已保存！');
+}
+
+</script>
+</body>
+</html>
