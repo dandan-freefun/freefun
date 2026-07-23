@@ -5,111 +5,315 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2025年7月 天气观察日记</title>
 <style>
-@page { size: A4 landscape; margin: 8mm; }
+@page { size: A4 landscape; margin: 6mm; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: #fff;
+  background: #fffbe6;
   display: flex;
   justify-content: center;
-  padding: 12px;
+  padding: 10px;
+  position: relative;
+  min-height: 100vh;
 }
-.sheet { width: 100%; max-width: 1100px; }
-.title-area { text-align: center; margin-bottom: 10px; }
-.title-area h1 { font-size: 22px; font-weight: 900; letter-spacing: 2px; margin-bottom: 2px; }
-.title-area .info { font-size: 12px; color: #888; }
-.title-area .info span { margin: 0 10px; }
-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+/* Background decorations */
+body::before {
+  content: '';
+  position: fixed;
+  top: 10px; right: 20px;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle, #ffd93d 60%, transparent 70%);
+  border-radius: 50%;
+  opacity: .5;
+}
+body::after {
+  content: '';
+  position: fixed;
+  bottom: 40px; left: 20px;
+  width: 100px; height: 50px;
+  background: #b8e6f0;
+  border-radius: 50px 50px 30px 30px;
+  opacity: .3;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 1100px;
+  position: relative;
+  border: 3px dashed #ffb347;
+  border-radius: 16px;
+  padding: 16px 20px 12px;
+  background: #fffef9;
+  box-shadow: 0 4px 20px rgba(255,179,71,.15);
+}
+
+/* Corner decorations */
+.corner {
+  position: absolute;
+  font-size: 36px;
+  opacity: .5;
+  pointer-events: none;
+}
+.corner-tl { top: -8px; left: -8px; }
+.corner-tr { top: -8px; right: -8px; }
+.corner-bl { bottom: -8px; left: -8px; }
+.corner-br { bottom: -8px; right: -8px; }
+
+/* Floating decorations */
+.deco {
+  position: absolute;
+  font-size: 24px;
+  opacity: .35;
+  pointer-events: none;
+  animation: float 3s ease-in-out infinite;
+}
+.deco:nth-child(odd) { animation-delay: 1.5s; }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Title */
+.title-area {
+  text-align: center;
+  margin-bottom: 6px;
+  position: relative;
+}
+.title-area .icon-row {
+  font-size: 28px;
+  letter-spacing: 6px;
+  margin-bottom: 2px;
+}
+.title-area h1 {
+  font-size: 24px;
+  font-weight: 900;
+  color: #ff6b35;
+  letter-spacing: 2px;
+  margin-bottom: 2px;
+  display: inline-block;
+  background: linear-gradient(180deg, transparent 60%, #ffe0b0 60%);
+  padding: 0 8px;
+}
+.title-area .info {
+  font-size: 12px;
+  color: #c0a080;
+  margin-top: 4px;
+}
+.title-area .info span {
+  margin: 0 12px;
+  display: inline-block;
+  border-bottom: 1px dashed #e0d0b0;
+  padding: 0 8px 2px;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* Header */
 thead th {
-  background: #4a90d9; color: #fff; font-size: 14px; font-weight: 700;
-  padding: 8px 0; text-align: center; border: 1px solid #3a7bc8; letter-spacing: 1px;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 10px 0;
+  text-align: center;
+  border: 2px solid #fff;
+  letter-spacing: 1px;
+  border-radius: 4px;
 }
-thead th:first-child { border-radius: 6px 0 0 0; }
-thead th:last-child { border-radius: 0 6px 0 0; }
-thead th.weekend { background: #e8725a; border-color: #d45a40; }
+thead th:nth-child(1) { background: #ffb3ba; }
+thead th:nth-child(2) { background: #ffdfba; }
+thead th:nth-child(3) { background: #ffffba; }
+thead th:nth-child(4) { background: #baffc9; }
+thead th:nth-child(5) { background: #bae1ff; }
+thead th:nth-child(6) { background: #ffb3e6; color: #fff; }
+thead th:nth-child(7) { background: #ff6b6b; color: #fff; }
+
+/* Date rows */
 .date-row td {
-  text-align: center; vertical-align: middle; padding: 2px 4px;
-  font-size: 16px; font-weight: 700; color: #333;
-  border: 1px solid #e0e0e0; height: 24px; background: #fafafa;
+  text-align: center;
+  vertical-align: middle;
+  padding: 2px 4px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #555;
+  border: 1.5px solid #f0e8d8;
+  height: 26px;
+  background: #fffef5;
 }
-.date-row td.other-month { color: #ccc; font-weight: 400; }
-.date-row td.weekend-col { background: #fff5f3; }
+.date-row td.empty-date {
+  background: #faf8f0;
+}
+
+/* Weather rows */
 .weather-row td {
-  text-align: center; vertical-align: middle; padding: 4px;
-  border: 1px solid #e8e8e8; height: 60px; background: #fff;
-  font-size: 11px; color: #ccc;
+  text-align: center;
+  vertical-align: middle;
+  padding: 4px;
+  border: 1.5px solid #f0e8d8;
+  height: 65px;
+  background: #fff;
+  font-size: 10px;
+  color: #ddd;
 }
-.weather-row td.weekend-col { background: #fffaf8; }
+.weather-row td::before {
+  content: '';
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: 0 auto 2px;
+  border-radius: 50%;
+  border: 1.5px dashed #e8e0d0;
+}
+.weather-row td.empty-date {
+  background: #faf8f0;
+}
+.weather-row td.empty-date::before {
+  display: none;
+}
+
+/* Summary row */
 .summary-row td {
-  padding: 12px 16px; font-size: 13px; color: #666;
-  border: 1px solid #e0e0e0; height: 50px; vertical-align: top; background: #fafafa;
+  padding: 10px 16px;
+  font-size: 12px;
+  color: #888;
+  border: 1.5px solid #f0e8d8;
+  height: 45px;
+  vertical-align: top;
+  background: #fffef5;
+  line-height: 1.7;
 }
-.summary-label { font-weight: 700; color: #4a90d9; font-size: 14px; }
-.footer { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: #aaa; }
-@media print { body { padding: 0; } .sheet { max-width: 100%; } }
+.summary-label {
+  font-weight: 800;
+  color: #ff6b35;
+  font-size: 14px;
+}
+
+/* Legend */
 .legend {
-  display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px;
-  padding: 8px 12px; background: #f8f8f8; border-radius: 6px;
-  font-size: 11px; color: #888; align-items: center;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  padding: 8px 14px;
+  background: #fffef5;
+  border-radius: 10px;
+  font-size: 11px;
+  color: #999;
+  align-items: center;
+  border: 1px dashed #f0e0c0;
 }
-.legend strong { color: #555; }
-.legend-item { display: flex; align-items: center; gap: 4px; }
-.legend-icon { font-size: 16px; }
+.legend strong { color: #888; }
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: #fff;
+  padding: 3px 8px;
+  border-radius: 12px;
+  border: 1px solid #f0e0d0;
+}
+.legend-icon { font-size: 18px; }
+
+/* Footer */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 10px;
+  color: #d0c0a0;
+  align-items: center;
+}
+.footer .stars { color: #ffb347; font-size: 12px; }
+
+@media print {
+  body { background: #fff; padding: 0; }
+  .sheet { max-width: 100%; border: 2px dashed #ffb347; box-shadow: none; }
+  body::before, body::after, .corner, .deco { display: none; }
+}
 </style>
 </head>
 <body>
+
+<!-- Decorations -->
+<div class="corner corner-tl">🌈</div>
+<div class="corner corner-tr">⭐</div>
+<div class="corner corner-bl">🌸</div>
+<div class="corner corner-br">🦋</div>
+
 <div class="sheet">
   <div class="title-area">
-    <h1>2025年7月 天气观察日记</h1>
-    <div class="info"><span>观察员：________</span><span>班级：________</span></div>
+    <div class="icon-row">☀️ 🌤️ ⛅ 🌧️ 🌈</div>
+    <h1>天气观察日记</h1>
+    <div class="info">
+      <span>观察员：________</span>
+      <span>2025年7月</span>
+      <span>班级：________</span>
+    </div>
   </div>
+
   <table>
     <thead>
       <tr>
-        <th>星期一</th><th>星期二</th><th>星期三</th><th>星期四</th>
-        <th>星期五</th><th class="weekend">星期六</th><th class="weekend">星期日</th>
+        <th>🌻 星期一</th>
+        <th>🌼 星期二</th>
+        <th>🌸 星期三</th>
+        <th>🍀 星期四</th>
+        <th>🌟 星期五</th>
+        <th>🎈 星期六</th>
+        <th>❤️ 星期日</th>
       </tr>
     </thead>
     <tbody id="calBody"></tbody>
   </table>
+
   <div class="legend">
-    <strong>图例：</strong>
-    <span class="legend-item"><span class="legend-icon">☀️</span>晴</span>
+    <strong>🎨 图例：</strong>
+    <span class="legend-item"><span class="legend-icon">☀️</span>晴天</span>
     <span class="legend-item"><span class="legend-icon">⛅</span>多云</span>
-    <span class="legend-item"><span class="legend-icon">☁️</span>阴</span>
-    <span class="legend-item"><span class="legend-icon">🌧️</span>雨</span>
+    <span class="legend-item"><span class="legend-icon">☁️</span>阴天</span>
+    <span class="legend-item"><span class="legend-icon">🌧️</span>下雨</span>
     <span class="legend-item"><span class="legend-icon">⛈️</span>雷雨</span>
-    <span class="legend-item"><span class="legend-icon">🌬️</span>风</span>
-    <span class="legend-item">🌡️____°C</span>
+    <span class="legend-item"><span class="legend-icon">🌬️</span>刮风</span>
+    <span class="legend-item">🌡️ ___°C</span>
   </div>
-  <div class="footer"><span>打印日期：________</span><span>家长签字：________</span></div>
+
+  <div class="footer">
+    <span>打印日期：________</span>
+    <span class="stars">⭐⭐⭐ 每天观察 · 认真记录 ⭐⭐⭐</span>
+    <span>家长签字：________</span>
+  </div>
 </div>
+
 <script>
 const weeks = [
-  [30,1,2,3,4,5,6],[7,8,9,10,11,12,13],[14,15,16,17,18,19,20],
-  [21,22,23,24,25,26,27],[28,29,30,31,1,2,3]
+  [null,1,2,3,4,5,6],
+  [7,8,9,10,11,12,13],
+  [14,15,16,17,18,19,20],
+  [21,22,23,24,25,26,27],
+  [28,29,30,31,null,null,null]
 ];
+
 let h='';
-weeks.forEach((w,wi)=>{
+weeks.forEach(w=>{
   h+='<tr class="date-row">';
-  w.forEach((d,di)=>{
-    let c='';
-    if((wi===0&&d===30)||(wi===4&&d<=3)) c='other-month';
-    if(di>=5) c+=' weekend-col';
-    h+=`<td class="${c.trim()}">${d}</td>`;
+  w.forEach(d=>{
+    if(d===null) h+='<td class="empty-date"></td>';
+    else h+=`<td>${d}</td>`;
   });
   h+='</tr><tr class="weather-row">';
-  w.forEach((d,di)=>{
-    let c=di>=5?'weekend-col':'';
-    h+=`<td class="${c}">画天气</td>`;
+  w.forEach(d=>{
+    h+=d===null?'<td class="empty-date"></td>':'<td>画天气</td>';
   });
   h+='</tr>';
 });
 h+=`<tr class="summary-row"><td colspan="7">
-<span class="summary-label">本月天气总结：</span><br>
-晴天____天 多云____天 阴天____天 雨天____天<br>
-最热____月____日____°C 最凉____月____日<br>
-我的发现：________________________________
+<span class="summary-label">✏️ 本月天气总结</span><br>
+晴天____天 &nbsp; 多云____天 &nbsp; 阴天____天 &nbsp; 雨天____天<br>
+最热：____月____日 &nbsp; ____°C &emsp; 最凉快：____月____日<br>
+<span style="color:#ff6b35">🔍 我的小发现：</span>________________________________
 </td></tr>`;
 document.getElementById('calBody').innerHTML=h;
 </script>
