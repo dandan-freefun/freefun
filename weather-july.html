@@ -13,53 +13,38 @@ body {
   display: flex;
   justify-content: center;
   padding: 10px;
-  min-height: 100vh;
 }
-
 .sheet {
   width: 100%;
   max-width: 1100px;
   position: relative;
   border: 3px dashed #ffb347;
   border-radius: 16px;
-  padding: 14px 18px 10px;
+  padding: 16px 20px 12px;
   background: #fffef9;
-  box-shadow: 0 4px 20px rgba(255,179,71,.12);
+  box-shadow: 0 4px 20px rgba(255,179,71,.15);
 }
+.corner {
+  position: absolute;
+  font-size: 32px;
+  opacity: .45;
+  pointer-events: none;
+}
+.corner-tl { top: -6px; left: -6px; }
+.corner-tr { top: -6px; right: -6px; }
+.corner-bl { bottom: -6px; left: -6px; }
+.corner-br { bottom: -6px; right: -6px; }
 
-/* Title */
 .title-area {
   text-align: center;
   margin-bottom: 6px;
-  position: relative;
 }
-.title-icons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
+.title-area .icon-row {
+  font-size: 26px;
+  letter-spacing: 6px;
   margin-bottom: 2px;
 }
-.cartoon-sun {
-  width: 44px; height: 44px;
-  background: #ffd93d;
-  border-radius: 50%;
-  position: relative;
-  display: inline-block;
-  box-shadow: 0 0 12px rgba(255,217,61,.5);
-}
-.cartoon-sun::after {
-  content: '😊';
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%,-50%);
-  font-size: 22px;
-}
-.cartoon-cloud {
-  display: inline-block;
-  font-size: 36px;
-}
-h1 {
+.title-area h1 {
   font-size: 24px;
   font-weight: 900;
   color: #ff6b35;
@@ -68,26 +53,23 @@ h1 {
   background: linear-gradient(180deg, transparent 60%, #ffe0b0 60%);
   padding: 0 8px;
 }
-.info {
+.title-area .info {
   font-size: 12px;
   color: #c0a080;
   margin-top: 4px;
 }
-.info span {
+.title-area .info span {
   margin: 0 12px;
   display: inline-block;
   border-bottom: 1px dashed #e0d0b0;
   padding: 0 8px 2px;
 }
 
-/* Table */
 table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
 }
-
-/* Header */
 thead th {
   font-size: 15px;
   font-weight: 800;
@@ -105,58 +87,51 @@ thead th:nth-child(5) { background: #bae1ff; }
 thead th:nth-child(6) { background: #e8baff; color: #fff; }
 thead th:nth-child(7) { background: #ffb3b3; color: #fff; }
 
-/* Date rows */
 .date-row td {
   text-align: center;
   vertical-align: middle;
   padding: 2px 4px;
   font-size: 18px;
   font-weight: 800;
-  color: #666;
+  color: #555;
   border: 1.5px solid #f0e8d8;
   height: 26px;
   background: #fffef5;
 }
 .date-row td.empty-date { background: #faf8f0; }
 
-/* Weather rows */
 .weather-row td {
   text-align: center;
   vertical-align: middle;
   padding: 4px;
   border: 1.5px solid #f0e8d8;
-  height: 70px;
+  height: 65px;
   background: #fff;
   position: relative;
 }
-.weather-row td .guide {
-  width: 40px; height: 40px;
+.weather-row td .draw-circle {
+  width: 36px;
+  height: 36px;
   margin: 0 auto;
   border-radius: 50%;
   border: 2px dashed #e8e0d0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  color: #e8e0d0;
 }
 .weather-row td.empty-date {
   background: #faf8f0;
 }
-.weather-row td.empty-date .guide {
-  border: none;
+.weather-row td.empty-date .draw-circle {
+  display: none;
 }
 
-/* Summary row */
 .summary-row td {
   padding: 10px 16px;
   font-size: 13px;
-  color: #999;
+  color: #888;
   border: 1.5px solid #f0e8d8;
   height: 44px;
   vertical-align: top;
   background: #fffef5;
-  line-height: 1.7;
+  line-height: 1.8;
 }
 .summary-label {
   font-weight: 800;
@@ -164,7 +139,6 @@ thead th:nth-child(7) { background: #ffb3b3; color: #fff; }
   font-size: 14px;
 }
 
-/* Legend */
 .legend {
   display: flex;
   gap: 10px;
@@ -190,60 +164,32 @@ thead th:nth-child(7) { background: #ffb3b3; color: #fff; }
 }
 .legend-icon { font-size: 18px; }
 
-/* Footer */
 .footer {
   display: flex;
   justify-content: space-between;
-  margin-top: 6px;
+  margin-top: 8px;
   font-size: 10px;
   color: #d0c0a0;
   align-items: center;
 }
 .footer .stars { color: #ffb347; font-size: 12px; }
 
-/* Cartoon characters */
-.characters {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-top: 2px;
-  padding: 0 20px;
-  pointer-events: none;
-}
-.char-left, .char-right {
-  font-size: 42px;
-  opacity: .6;
-  animation: bounce 2s ease-in-out infinite;
-}
-.char-right { animation-delay: .8s; }
-.char-center {
-  display: flex;
-  gap: 6px;
-  align-items: flex-end;
-}
-.char-tree { font-size: 28px; opacity: .4; }
-.char-flower { font-size: 22px; opacity: .5; }
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
-
 @media print {
   body { background: #fff; padding: 0; }
   .sheet { max-width: 100%; border: 2px dashed #ffb347; box-shadow: none; }
-  .characters { page-break-inside: avoid; }
 }
 </style>
 </head>
 <body>
 
 <div class="sheet">
+  <div class="corner corner-tl">🌈</div>
+  <div class="corner corner-tr">⭐</div>
+  <div class="corner corner-bl">🌸</div>
+  <div class="corner corner-br">🦋</div>
+
   <div class="title-area">
-    <div class="title-icons">
-      <span class="cartoon-cloud">☁️</span>
-      <div class="cartoon-sun"></div>
-      <span class="cartoon-cloud">⛅</span>
-    </div>
+    <div class="icon-row">☀️ 🌤️ ⛅ 🌧️ 🌈</div>
     <h1>天气观察日记</h1>
     <div class="info">
       <span>观察员：________</span>
@@ -278,19 +224,6 @@ thead th:nth-child(7) { background: #ffb3b3; color: #fff; }
     <span class="legend-item">🌡️ ___°C</span>
   </div>
 
-  <!-- Cartoon characters at bottom -->
-  <div class="characters">
-    <div class="char-left">🐻</div>
-    <div class="char-center">
-      <span class="char-tree">🌳</span>
-      <span class="char-flower">🌷</span>
-      <span class="char-tree">🌳</span>
-      <span class="char-flower">🌸</span>
-      <span class="char-tree">🌳</span>
-    </div>
-    <div class="char-right">🐰</div>
-  </div>
-
   <div class="footer">
     <span>打印日期：________</span>
     <span class="stars">⭐⭐⭐ 每天观察 · 认真记录 ⭐⭐⭐</span>
@@ -317,13 +250,13 @@ weeks.forEach(w=>{
   h+='</tr><tr class="weather-row">';
   w.forEach(d=>{
     if(d===null) h+='<td class="empty-date"></td>';
-    else h+=`<td><div class="guide">⬚</div></td>`;
+    else h+=`<td><div class="draw-circle"></div></td>`;
   });
   h+='</tr>';
 });
 h+=`<tr class="summary-row"><td colspan="7">
 <span class="summary-label">✏️ 我的天气小总结</span><br>
-这个月晴天____天，多云____天，阴天____天，雨天____天&emsp;
+这个月晴天____天 &nbsp; 多云____天 &nbsp; 阴天____天 &nbsp; 雨天____天 &emsp;
 <span style="color:#ff6b35">🔍 小发现：</span>________________________________
 </td></tr>`;
 document.getElementById('calBody').innerHTML=h;
