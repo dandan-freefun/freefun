@@ -175,6 +175,7 @@ thead th:nth-child(7) { background: #ffb3b3; color: #fff; }
 .footer .stars { color: #ffb347; font-size: 12px; }
 
 @media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   body { background: #fff; padding: 0; }
   .sheet { max-width: 100%; border: 2px dashed #ffb347; box-shadow: none; }
 }
