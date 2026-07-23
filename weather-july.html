@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2025年7月 天气观察日记</title>
+<style>
+@page { size: A4 landscape; margin: 8mm; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+}
+.sheet { width: 100%; max-width: 1100px; }
+.title-area { text-align: center; margin-bottom: 10px; }
+.title-area h1 { font-size: 22px; font-weight: 900; letter-spacing: 2px; margin-bottom: 2px; }
+.title-area .info { font-size: 12px; color: #888; }
+.title-area .info span { margin: 0 10px; }
+table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+thead th {
+  background: #4a90d9; color: #fff; font-size: 14px; font-weight: 700;
+  padding: 8px 0; text-align: center; border: 1px solid #3a7bc8; letter-spacing: 1px;
+}
+thead th:first-child { border-radius: 6px 0 0 0; }
+thead th:last-child { border-radius: 0 6px 0 0; }
+thead th.weekend { background: #e8725a; border-color: #d45a40; }
+.date-row td {
+  text-align: center; vertical-align: middle; padding: 2px 4px;
+  font-size: 16px; font-weight: 700; color: #333;
+  border: 1px solid #e0e0e0; height: 24px; background: #fafafa;
+}
+.date-row td.other-month { color: #ccc; font-weight: 400; }
+.date-row td.weekend-col { background: #fff5f3; }
+.weather-row td {
+  text-align: center; vertical-align: middle; padding: 4px;
+  border: 1px solid #e8e8e8; height: 60px; background: #fff;
+  font-size: 11px; color: #ccc;
+}
+.weather-row td.weekend-col { background: #fffaf8; }
+.summary-row td {
+  padding: 12px 16px; font-size: 13px; color: #666;
+  border: 1px solid #e0e0e0; height: 50px; vertical-align: top; background: #fafafa;
+}
+.summary-label { font-weight: 700; color: #4a90d9; font-size: 14px; }
+.footer { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: #aaa; }
+@media print { body { padding: 0; } .sheet { max-width: 100%; } }
+.legend {
+  display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px;
+  padding: 8px 12px; background: #f8f8f8; border-radius: 6px;
+  font-size: 11px; color: #888; align-items: center;
+}
+.legend strong { color: #555; }
+.legend-item { display: flex; align-items: center; gap: 4px; }
+.legend-icon { font-size: 16px; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="title-area">
+    <h1>2025年7月 天气观察日记</h1>
+    <div class="info"><span>观察员：________</span><span>班级：________</span></div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>星期一</th><th>星期二</th><th>星期三</th><th>星期四</th>
+        <th>星期五</th><th class="weekend">星期六</th><th class="weekend">星期日</th>
+      </tr>
+    </thead>
+    <tbody id="calBody"></tbody>
+  </table>
+  <div class="legend">
+    <strong>图例：</strong>
+    <span class="legend-item"><span class="legend-icon">☀️</span>晴</span>
+    <span class="legend-item"><span class="legend-icon">⛅</span>多云</span>
+    <span class="legend-item"><span class="legend-icon">☁️</span>阴</span>
+    <span class="legend-item"><span class="legend-icon">🌧️</span>雨</span>
+    <span class="legend-item"><span class="legend-icon">⛈️</span>雷雨</span>
+    <span class="legend-item"><span class="legend-icon">🌬️</span>风</span>
+    <span class="legend-item">🌡️____°C</span>
+  </div>
+  <div class="footer"><span>打印日期：________</span><span>家长签字：________</span></div>
+</div>
+<script>
+const weeks = [
+  [30,1,2,3,4,5,6],[7,8,9,10,11,12,13],[14,15,16,17,18,19,20],
+  [21,22,23,24,25,26,27],[28,29,30,31,1,2,3]
+];
+let h='';
+weeks.forEach((w,wi)=>{
+  h+='<tr class="date-row">';
+  w.forEach((d,di)=>{
+    let c='';
+    if((wi===0&&d===30)||(wi===4&&d<=3)) c='other-month';
+    if(di>=5) c+=' weekend-col';
+    h+=`<td class="${c.trim()}">${d}</td>`;
+  });
+  h+='</tr><tr class="weather-row">';
+  w.forEach((d,di)=>{
+    let c=di>=5?'weekend-col':'';
+    h+=`<td class="${c}">画天气</td>`;
+  });
+  h+='</tr>';
+});
+h+=`<tr class="summary-row"><td colspan="7">
+<span class="summary-label">本月天气总结：</span><br>
+晴天____天 多云____天 阴天____天 雨天____天<br>
+最热____月____日____°C 最凉____月____日<br>
+我的发现：________________________________
+</td></tr>`;
+document.getElementById('calBody').innerHTML=h;
+</script>
+</body>
+</html>
